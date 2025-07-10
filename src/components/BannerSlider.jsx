@@ -6,28 +6,28 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-// Sample images (replace with real URLs)
+// TowerTrack-themed slides
 const slides = [
   {
-    image: "https://i.postimg.cc/wTFQSXqk/banner1.webp",
-    heading: "Share Surplus, Spread Smiles",
-    text: "Help reduce food waste by sharing your extra food with the community.",
-    button: "Share Now",
-    buttonLink: "/addfood",
+    image: "https://i.ibb.co/d0BKtS9t/bannerone.webp",
+    heading: "Seamless Apartment Management",
+    text: "Manage residents, track payments, and simplify building operations — all in one place.",
+    button: "Explore Features",
+    buttonLink: "/dashboard",
   },
   {
-    image: "https://i.postimg.cc/mg5NrTFz/banner2.webp",
-    heading: "Find Meals, Fight Hunger",
-    text: "Access wholesome meals near you. Because no one should go hungry.",
-    button: "Find Food",
-    buttonLink: "/availablefoods",
-  },
-  {
-    image: "https://i.postimg.cc/YC9zkvjB/banner3.webp",
-    heading: "Join the FoodCircle Movement",
-    text: "Be part of a caring community making a difference with every bite.",
-    button: "Get Involved",
+    image: "https://i.ibb.co/yc31Pg4B/bannertwo.webp",
+    heading: "Empowering Residents Daily",
+    text: "From maintenance requests to community updates — TowerTrack keeps you connected.",
+    button: "Join TowerTrack",
     buttonLink: "/registration",
+  },
+  {
+    image: "https://i.ibb.co/G4R7s8ry/bannerthree.webp",
+    heading: "Smart Living Starts Here",
+    text: "Experience modern tools for smarter living in your apartment community.",
+    button: "Get Started",
+    buttonLink: "/login",
   },
 ];
 
@@ -68,7 +68,7 @@ const BannerSlider = () => {
                 className="w-full h-full object-cover rounded-md transition-all duration-500"
               />
               <div className="absolute inset-0 bg-black/40 flex flex-col items-start justify-center p-6 md:p-16 rounded-md transition-all duration-500">
-                <h2 className="text-2xl md:text-5xl font-bold font-poppins mb-3 text-amber-400 transition-all duration-500">
+                <h2 className="text-2xl md:text-5xl font-bold font-poppins mb-3 text-lime-400 transition-all duration-500">
                   {slide.heading}
                 </h2>
                 <p className="text-sm md:text-lg font-inter mb-4 max-w-lg text-white dark:text-gray-200 transition-all duration-500">
@@ -76,7 +76,7 @@ const BannerSlider = () => {
                 </p>
                 <a
                   href={slide.buttonLink}
-                  className="bg-green-600 hover:bg-green-700 transition-all duration-500 px-5 py-2 rounded text-white font-medium"
+                  className="bg-emerald-500 hover:bg-emerald-600 transition-all duration-500 px-5 py-2 rounded text-white font-medium"
                 >
                   {slide.button}
                 </a>

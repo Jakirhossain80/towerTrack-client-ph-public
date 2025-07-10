@@ -17,13 +17,13 @@
   --font-inter: "Inter", sans-serif;
 }
 
-/* .swiper-pagination-bullet {
+.swiper-pagination-bullet {
   @apply !bg-amber-400 !opacity-90 transition-all;
 }
 
 .swiper-pagination-bullet-active {
-  @apply !bg-green-600 opacity-100 !scale-150;
-} */
+  @apply !bg-lime-500 opacity-100 !scale-150;
+}
 
 
 html {
