@@ -29,18 +29,7 @@ const Navbar = () => {
       isActive ? "text-lime-500 font-medium" : ""
     }`;
 
-  const navLinks = (
-    <>
-      {user && (
-        <NavLink
-          to="/dashboard"
-          className={({ isActive }) => linkClasses(isActive)}
-        >
-          Dashboard
-        </NavLink>
-      )}
-    </>
-  );
+ 
 
   return (
     <nav className="fixed top-0 left-0 right-0 w-full container bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 px-4 py-10 flex justify-between items-center z-50 transition-all duration-500">
@@ -67,7 +56,7 @@ const Navbar = () => {
 
       {/* Right: Auth, Theme, User Menu */}
       <div className="hidden md:flex items-center gap-6 text-gray-800 dark:text-gray-200 font-inter transition-all duration-500">
-        {navLinks}
+      
         <button
           id="toggleDesktop"
           onClick={toggleTheme}
@@ -109,6 +98,12 @@ const Navbar = () => {
                 <p className="font-medium text-gray-800 dark:text-gray-200 transition-all duration-500">
                   {user.displayName}
                 </p>
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) => `block mt-2 ${linkClasses(isActive)}`}
+                >
+                  Dashboard
+                </NavLink>
                 <button
                   onClick={handleLogout}
                   className="mt-2 w-full text-left text-rose-500 hover:text-rose-600 cursor-pointer transition-all duration-500"

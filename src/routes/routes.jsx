@@ -5,6 +5,8 @@ import Apartment from "../pages/generalPages/Apartment";
 import NotFound from "../pages/generalPages/NotFound";
 import Login from "../pages/generalPages/Login";
 import Registration from "../pages/generalPages/Registration";
+import DashboardLayout from "../layouts/DashboardLayout";
+import PrivateRoute from "../provider/PrivateRoute";
 
 
 
@@ -35,7 +37,29 @@ export const router = createBrowserRouter([
     ],
   },
 
+
   {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+
+    children: [
+      // {
+      //   path: "/dashboard/myParcels",
+      //   Component: MyParcels,
+      // },
+    ]
+
+    },
+
+ 
+ 
+ 
+ 
+    {
     path: "/*",
     element: <NotFound />,
   },

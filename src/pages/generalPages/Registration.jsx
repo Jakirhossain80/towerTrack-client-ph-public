@@ -7,13 +7,10 @@ import { updateProfile, sendEmailVerification } from 'firebase/auth';
 import LottieAnimation from '../../utils/LottieAnimation';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import useAxiosSecure from '../hooks/useAxiosSecure';
-import { useMutation } from '@tanstack/react-query';
 
 const Registration = () => {
   const { createUser, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const axiosSecure = useAxiosSecure();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -23,27 +20,11 @@ const Registration = () => {
   });
 
   const [passwordError, setPasswordError] = useState('');
-
   const { name, email, photoURL, password } = formData;
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
   }, []);
-
-  const addUserToDB = useMutation({
-    mutationFn: async (user) => {
-      const res = await axiosSecure.post('/api/users', user);
-      return res.data;
-    },
-    onSuccess: (data) => {
-      if (data?.insertedId) {
-        Swal.fire('Welcome!', 'User info saved to database.', 'success');
-      }
-    },
-    onError: () => {
-      Swal.fire('Oops', 'Failed to save user info', 'error');
-    },
-  });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -105,13 +86,6 @@ const Registration = () => {
               photoURL: photoURL,
             });
 
-            addUserToDB.mutate({
-              uid: user.uid,
-              name: name,
-              email: email,
-              role: 'user',
-            });
-
             navigate('/login');
           })
           .catch((error) => {
@@ -125,24 +99,24 @@ const Registration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4 transition-all duration-500">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center px-4 transition-all duration-500">
       <div
         className="flex flex-col md:flex-row items-center gap-10 px-8 py-12 rounded-3xl 
-        bg-gray-100 dark:bg-gray-800 
+        bg-white dark:bg-slate-800 
         shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] 
         dark:shadow-[8px_8px_16px_#1f2937,-8px_-8px_16px_#374151]"
         data-aos="zoom-in"
       >
         <div
-          className="w-full sm:w-96 bg-gray-100 dark:bg-gray-800 p-8 rounded-3xl 
+          className="w-full sm:w-96 bg-white dark:bg-slate-800 p-8 rounded-3xl 
           shadow-[inset_6px_6px_12px_#d1d9e6,inset_-6px_-6px_12px_#ffffff] 
           dark:shadow-[inset_6px_6px_12px_#1f2937,inset_-6px_-6px_12px_#374151] 
           transition-all duration-500"
         >
           <div className="text-center mb-6">
-            <FaUserPlus className="text-3xl text-blue-600 dark:text-blue-500 mx-auto mb-2 transition-all duration-500" />
-            <h2 className="text-2xl font-bold font-[Poppins] text-blue-600 dark:text-blue-500 transition-all duration-500">
-              Create Your ZafShift Account
+            <FaUserPlus className="text-3xl text-lime-600 dark:text-lime-500 mx-auto mb-2 transition-all duration-500" />
+            <h2 className="text-2xl font-bold font-[Poppins] text-lime-600 dark:text-lime-500 transition-all duration-500">
+              Create Your TowerTrack Account
             </h2>
           </div>
 
@@ -153,7 +127,7 @@ const Registration = () => {
               placeholder="Full Name"
               value={name}
               onChange={handleChange}
-              className="w-full p-3 rounded-xl mb-4 bg-gray-100 dark:bg-gray-700 shadow-inner border-none focus:outline-none focus:ring-2 focus:ring-blue-600 dark:shadow-[inset_6px_6px_12px_#1f2937,inset_-6px_-6px_12px_#374151] transition-all duration-500"
+              className="w-full p-3 rounded-xl mb-4 bg-gray-100 dark:bg-gray-700 shadow-inner border-none focus:outline-none focus:ring-2 focus:ring-lime-600 dark:focus:ring-lime-500 transition-all duration-500"
             />
 
             <input
@@ -162,7 +136,7 @@ const Registration = () => {
               placeholder="Email"
               value={email}
               onChange={handleChange}
-              className="w-full p-3 rounded-xl mb-4 bg-gray-100 dark:bg-gray-700 shadow-inner border-none focus:outline-none focus:ring-2 focus:ring-blue-600 dark:shadow-[inset_6px_6px_12px_#1f2937,inset_-6px_-6px_12px_#374151] transition-all duration-500"
+              className="w-full p-3 rounded-xl mb-4 bg-gray-100 dark:bg-gray-700 shadow-inner border-none focus:outline-none focus:ring-2 focus:ring-lime-600 dark:focus:ring-lime-500 transition-all duration-500"
             />
 
             <input
@@ -171,7 +145,7 @@ const Registration = () => {
               placeholder="Photo URL"
               value={photoURL}
               onChange={handleChange}
-              className="w-full p-3 rounded-xl mb-4 bg-gray-100 dark:bg-gray-700 shadow-inner border-none focus:outline-none focus:ring-2 focus:ring-blue-600 dark:shadow-[inset_6px_6px_12px_#1f2937,inset_-6px_-6px_12px_#374151] transition-all duration-500"
+              className="w-full p-3 rounded-xl mb-4 bg-gray-100 dark:bg-gray-700 shadow-inner border-none focus:outline-none focus:ring-2 focus:ring-lime-600 dark:focus:ring-lime-500 transition-all duration-500"
             />
 
             <input
@@ -180,7 +154,7 @@ const Registration = () => {
               placeholder="Password"
               value={password}
               onChange={handleChange}
-              className="w-full p-3 rounded-xl mb-2 bg-gray-100 dark:bg-gray-700 shadow-inner border-none focus:outline-none focus:ring-2 focus:ring-blue-600 dark:shadow-[inset_6px_6px_12px_#1f2937,inset_-6px_-6px_12px_#374151] transition-all duration-500"
+              className="w-full p-3 rounded-xl mb-2 bg-gray-100 dark:bg-gray-700 shadow-inner border-none focus:outline-none focus:ring-2 focus:ring-lime-600 dark:focus:ring-lime-500 transition-all duration-500"
             />
             {passwordError && (
               <p className="text-sm text-rose-500 mb-4 transition-all duration-500">{passwordError}</p>
@@ -188,17 +162,17 @@ const Registration = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-xl hover:bg-blue-700 transition-all duration-500 cursor-pointer shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] dark:shadow-[4px_4px_8px_#1f2937,-4px_-4px_8px_#374151]"
+              className="w-full bg-lime-600 text-white py-2 px-4 rounded-xl hover:bg-lime-700 transition-all duration-500 cursor-pointer shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] dark:shadow-[4px_4px_8px_#1f2937,-4px_-4px_8px_#374151]"
             >
               Register
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 transition-all duration-500">
-            Already have an account?{' '}
+          <p className="mt-6 text-center text-sm text-gray-700 dark:text-gray-400 transition-all duration-500">
+            Already have a TowerTrack account?{' '}
             <Link
               to="/login"
-              className="text-blue-600 dark:text-blue-500 hover:underline font-medium transition-all duration-500"
+              className="text-lime-600 dark:text-lime-500 hover:underline font-medium transition-all duration-500"
             >
               Login here
             </Link>
@@ -206,7 +180,7 @@ const Registration = () => {
         </div>
 
         <div className="hidden md:block">
-          <LottieAnimation src="/Registration.json" width="500px" height="500px" />
+          <LottieAnimation src="/registration-lime.json" width="500px" height="500px" />
         </div>
       </div>
     </div>

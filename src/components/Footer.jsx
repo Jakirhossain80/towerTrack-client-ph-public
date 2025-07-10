@@ -18,7 +18,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-inter border-t border-gray-200 dark:border-gray-700 transition-all duration-500">
-      <div className="max-w-7xl mx-auto px-6 py-10 grid gap-8 sm:grid-cols-2 md:grid-cols-3">
+      <div className="max-w-7xl mx-auto px-2 py-20 grid gap-8 sm:grid-cols-2 md:grid-cols-3">
         {/* Left: Logo & Tagline */}
         <div className="text-center md:text-left space-y-2">
           <Link
