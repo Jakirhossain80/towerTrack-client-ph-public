@@ -3,9 +3,12 @@ import { Link } from "react-router-dom";
 import LottieAnimation from "../../utils/LottieAnimation";
 
 const NotFound = () => {
+
+  //Have used reuseable component. 
+  
   return (
     <div className="bg-gray-50 dark:bg-slate-900 min-h-[450px] flex flex-col items-center justify-center px-4 py-12 my-10 text-center transition-all duration-500">
-      <LottieAnimation
+      <LottieAnimation 
         src="/notFoundAnimation.json"
         width="800px"
         height="500px"
