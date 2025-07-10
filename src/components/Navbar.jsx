@@ -6,6 +6,7 @@ import { ThemeContext } from "../provider/ThemeProvider";
 import { signOut, getAuth } from "firebase/auth";
 import app from "../firebase.config";
 import { FiSun, FiMoon } from "react-icons/fi";
+import { MdLogin } from "react-icons/md";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import logoImage from "../assets/logo-towertrack-final.png";
 
@@ -28,8 +29,6 @@ const Navbar = () => {
     `hover:text-lime-600 transition-all duration-500 ${
       isActive ? "text-lime-500 font-medium" : ""
     }`;
-
- 
 
   return (
     <nav className="fixed top-0 left-0 right-0 w-full container bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 px-4 py-10 flex justify-between items-center z-50 transition-all duration-500">
@@ -56,7 +55,6 @@ const Navbar = () => {
 
       {/* Right: Auth, Theme, User Menu */}
       <div className="hidden md:flex items-center gap-6 text-gray-800 dark:text-gray-200 font-inter transition-all duration-500">
-      
         <button
           id="toggleDesktop"
           onClick={toggleTheme}
@@ -67,12 +65,18 @@ const Navbar = () => {
 
         {!user && (
           <>
-            <NavLink
-              to="/login"
-              className="text-emerald-500 font-semibold hover:text-emerald-600 transition-all duration-500"
-            >
-              Login
-            </NavLink>
+            <div className="relative group">
+              <NavLink
+                to="/login"
+                className="text-emerald-500 font-semibold hover:text-emerald-600 transition-all duration-500"
+              >
+                <MdLogin className="w-6 h-6" />
+              </NavLink>
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 rounded bg-gray-800 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                Login
+              </div>
+            </div>
+
             <NavLink
               to="/registration"
               className="text-emerald-500 font-semibold hover:text-emerald-600 transition-all duration-500"
@@ -100,7 +104,9 @@ const Navbar = () => {
                 </p>
                 <NavLink
                   to="/dashboard"
-                  className={({ isActive }) => `block mt-2 ${linkClasses(isActive)}`}
+                  className={({ isActive }) =>
+                    `block mt-2 ${linkClasses(isActive)}`
+                  }
                 >
                   Dashboard
                 </NavLink>
@@ -168,8 +174,9 @@ const Navbar = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-emerald-500 font-semibold hover:text-emerald-600 transition-all duration-500"
               >
-                Login
+                <MdLogin className="w-6 h-6" />
               </NavLink>
+
               <NavLink
                 to="/registration"
                 onClick={() => setIsMobileMenuOpen(false)}

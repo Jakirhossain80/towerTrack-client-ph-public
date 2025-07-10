@@ -3,13 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaUserPlus } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { AuthContext } from "../../provider/AuthProvider";
-import { updateProfile, sendEmailVerification } from 'firebase/auth';
+import { updateProfile } from 'firebase/auth';
 import LottieAnimation from '../../utils/LottieAnimation';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const Registration = () => {
-  const { createUser, setUser } = useContext(AuthContext);
+  const { createUser } = useContext(AuthContext); // ❌ removed setUser
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -30,6 +30,8 @@ const Registration = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (e.target.name === 'password') setPasswordError('');
   };
+
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const validatePassword = (pwd) => {
     const hasUppercase = /[A-Z]/.test(pwd);
@@ -53,7 +55,7 @@ const Registration = () => {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!name || !email || !photoURL || !password) {
@@ -61,41 +63,35 @@ const Registration = () => {
       return;
     }
 
+    if (!validateEmail(email)) {
+      Swal.fire('Invalid email format.');
+      return;
+    }
+
     if (!validatePassword(password)) return;
 
-    createUser(email, password)
-      .then((result) => {
-        const user = result.user;
+    try {
+      const result = await createUser(email, password);
+      const user = result.user;
 
-        sendEmailVerification(user).then(() => {
-          Swal.fire(
-            'Verify Your Email',
-            'A verification link has been sent to your email. Please verify your email before logging in.',
-            'info'
-          );
-        });
-
-        updateProfile(user, {
-          displayName: name,
-          photoURL: photoURL,
-        })
-          .then(() => {
-            setUser({
-              ...user,
-              displayName: name,
-              photoURL: photoURL,
-            });
-
-            navigate('/login');
-          })
-          .catch((error) => {
-            Swal.fire('Profile update failed', error.message, 'error');
-          });
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        Swal.fire('Error', errorMessage, 'error');
+      await updateProfile(user, {
+        displayName: name,
+        photoURL: photoURL,
       });
+
+      // ✅ No manual setUser — rely on Firebase listener
+      Swal.fire({
+        icon: 'success',
+        title: 'Registration Successful',
+        text: 'Your account has been created!',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      navigate('/login');
+    } catch (error) {
+      Swal.fire('Error', error.message, 'error');
+    }
   };
 
   return (
