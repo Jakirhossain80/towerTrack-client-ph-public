@@ -3,6 +3,8 @@ import MainLayout from "../layouts/MainLayout";
 import Home from "../components/Home";
 import Apartment from "../pages/generalPages/Apartment";
 import NotFound from "../pages/generalPages/NotFound";
+import Login from "../pages/generalPages/Login";
+import Registration from "../pages/generalPages/Registration";
 
 
 
@@ -22,14 +24,14 @@ export const router = createBrowserRouter([
         Component: Apartment,
       },
 
-      // {
-      //   path: "/login",
-      //   Component: Login,
-      // },
-      // {
-      //   path: "/registration",
-      //   Component: Registration,
-      // },
+      {
+        path: "/login",
+        Component: Login,
+      },
+      {
+        path: "/registration",
+        Component: Registration,
+      },
     ],
   },
 

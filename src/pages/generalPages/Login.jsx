@@ -2,20 +2,17 @@ import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { AuthContext } from "../provider/AuthProvider";
+import { AuthContext } from "../../provider/AuthProvider";
 import { useLocation } from "react-router";
-import { showSuccessAlert, showErrorAlert } from "../utils/SweetAlert";
-import LottieAnimation from "../utils/LottieAnimation";
+import { showSuccessAlert, showErrorAlert } from "../../utils/SweetAlert";
+import LottieAnimation from "../../utils/LottieAnimation";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import useAxiosSecure from "../hooks/useAxiosSecure";
-import { useMutation } from "@tanstack/react-query";
 
 const Login = () => {
   const { signIn, googleLogin } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const axiosSecure = useAxiosSecure();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,21 +23,6 @@ const Login = () => {
     AOS.init({ duration: 1000, once: true });
   }, []);
 
-  const addUserToDB = useMutation({
-    mutationFn: async (user) => {
-      const res = await axiosSecure.post("/api/users", user);
-      return res.data;
-    },
-    onSuccess: (data) => {
-      if (data?.insertedId) {
-        showSuccessAlert("User info saved to database.");
-      }
-    },
-    onError: () => {
-      showErrorAlert("Failed to save user info");
-    },
-  });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -50,25 +32,10 @@ const Login = () => {
     setLoading(true);
     try {
       const result = await signIn(email, password);
-      const user = result.user;
-
-      if (user.emailVerified) {
-        addUserToDB.mutate({
-          uid: user.uid,
-          name: user.displayName || "No Name",
-          email: user.email,
-          role: "user",
-        });
-
-        showSuccessAlert("Login successful!");
-        navigate(`${location.state ? location.state : "/"}`);
-      } else {
-        showErrorAlert(
-          "Email not verified. Please check your inbox and verify your email before logging in."
-        );
-      }
+      showSuccessAlert("Welcome back to TowerTrack!");
+      navigate(`${location.state ? location.state : "/"}`);
     } catch (err) {
-      showErrorAlert("Login failed. Please check your credentials and try again.");
+      showErrorAlert("Login failed. Please check your credentials and try again.", err);
     } finally {
       setLoading(false);
     }
@@ -77,16 +44,7 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const result = await googleLogin();
-      const user = result.user;
-
-      addUserToDB.mutate({
-        uid: user.uid,
-        name: user.displayName || "No Name",
-        email: user.email,
-        role: "user",
-      });
-
-      showSuccessAlert("Google login successful!");
+      showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
       navigate(`${location.state ? location.state : "/"}`);
     } catch (err) {
       showErrorAlert(err.message);
@@ -108,8 +66,8 @@ const Login = () => {
             border border-white/20 dark:border-white/10 shadow-lg 
             transition-all duration-500"
         >
-          <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-8 text-center font-poppins">
-            Login to ZafShift
+          <h2 className="text-2xl font-bold text-lime-600 dark:text-lime-500 mb-8 text-center font-poppins">
+            Login to TowerTrack
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -118,7 +76,7 @@ const Login = () => {
               placeholder="Email"
               className="w-full px-4 py-3 rounded-xl bg-gray-200/60 dark:bg-white/10 
                 border border-white/20 dark:border-white/10 text-gray-800 dark:text-gray-200 
-                focus:outline-none focus:ring-2 focus:ring-blue-600"
+                focus:outline-none focus:ring-2 focus:ring-lime-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -129,7 +87,7 @@ const Login = () => {
                 placeholder="Password"
                 className="w-full px-4 py-3 rounded-xl bg-gray-200/60 dark:bg-white/10 
                   border border-white/20 dark:border-white/10 text-gray-800 dark:text-gray-200 
-                  focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  focus:outline-none focus:ring-2 focus:ring-lime-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -148,7 +106,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl 
+              className="w-full bg-lime-600 hover:bg-lime-700 text-white font-medium py-3 rounded-xl 
                 transition-all duration-300 flex items-center justify-center shadow-md cursor-pointer"
             >
               {loading ? (
@@ -175,15 +133,11 @@ const Login = () => {
             Continue with Google
           </button>
 
-          <p className="text-right text-sm text-blue-600 dark:text-blue-500 hover:underline mt-2">
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </p>
-
           <p className="mt-1 text-center text-sm text-gray-700 dark:text-gray-400">
-            Don’t have an account? {" "}
+            Don’t have an account?{" "}
             <Link
               to="/registration"
-              className="text-blue-600 dark:text-blue-500 hover:underline font-medium"
+              className="text-lime-600 dark:text-lime-500 hover:underline font-medium"
             >
               Register here
             </Link>
@@ -192,7 +146,7 @@ const Login = () => {
 
         {/* Lottie Animation */}
         <div className="hidden md:block">
-          <LottieAnimation src="/Login.json" width="500px" height="500px" />
+          <LottieAnimation src="/login-lime.json" width="500px" height="500px" />
         </div>
       </div>
     </div>
