@@ -1,6 +1,8 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -34,11 +36,16 @@ const slides = [
 const BannerSlider = () => {
   const swiperRef = useRef(null);
 
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+  }, []);
+
   return (
     <div
       className="w-full h-[300px] md:h-[650px] relative transition-all duration-500"
       onMouseEnter={() => swiperRef.current?.autoplay?.stop()}
       onMouseLeave={() => swiperRef.current?.autoplay?.start()}
+      data-aos="zoom-in"
     >
       <Swiper
         modules={[Autoplay, Navigation, Pagination]}

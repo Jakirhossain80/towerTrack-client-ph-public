@@ -1,6 +1,8 @@
 // src/components/Footer.jsx
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { NavLink, Link } from "react-router-dom";
 import {
   FaBuilding,
   FaFacebook,
@@ -8,16 +10,22 @@ import {
   FaTwitter,
   FaGithub,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 const Footer = () => {
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+  }, []);
+
   const navLinkClass = ({ isActive }) =>
     `transition hover:text-lime-600 ${
       isActive ? "text-lime-500 font-semibold" : ""
     }`;
 
   return (
-    <footer className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-inter border-t border-gray-200 dark:border-gray-700 transition-all duration-500">
+    <footer
+      className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-inter border-t border-gray-200 dark:border-gray-700 transition-all duration-500"
+      data-aos="zoom-in"
+    >
       <div className="max-w-7xl mx-auto px-2 py-20 grid gap-8 sm:grid-cols-2 md:grid-cols-3">
         {/* Left: Logo & Tagline */}
         <div className="text-center md:text-left space-y-2">
