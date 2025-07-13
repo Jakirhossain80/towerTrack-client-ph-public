@@ -8,6 +8,7 @@ import { showSuccessAlert, showErrorAlert } from "../../utils/SweetAlert";
 import LottieAnimation from "../../utils/LottieAnimation";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import axios from "axios"; // ✅ Axios to request JWT
 
 const Login = () => {
   const { signIn, googleLogin } = useContext(AuthContext);
@@ -23,6 +24,19 @@ const Login = () => {
     AOS.init({ duration: 1000, once: true });
   }, []);
 
+  // ✅ Send Firebase user email to backend to get JWT and set cookie
+  const fetchJwt = async (email) => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/jwt`,
+        { email },
+        { withCredentials: true } // 💡 Allows server to set HTTP-only cookie
+      );
+    } catch (err) {
+      console.error("JWT fetch error:", err);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -32,10 +46,11 @@ const Login = () => {
     setLoading(true);
     try {
       const result = await signIn(email, password);
+      await fetchJwt(result.user.email); // ✅ Call to backend after Firebase login
       showSuccessAlert("Welcome back to TowerTrack!");
-      navigate(`${location.state ? location.state : "/"}`);
+      navigate(location.state || "/");
     } catch (err) {
-      showErrorAlert("Login failed. Please check your credentials and try again.", err);
+      showErrorAlert("Login failed. Please check your credentials and try again.");
     } finally {
       setLoading(false);
     }
@@ -44,8 +59,9 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const result = await googleLogin();
+      await fetchJwt(result.user.email); // ✅ JWT fetch after Google sign-in
       showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
-      navigate(`${location.state ? location.state : "/"}`);
+      navigate(location.state || "/");
     } catch (err) {
       showErrorAlert(err.message);
     }
@@ -60,12 +76,7 @@ const Login = () => {
           backdrop-blur-md bg-white/30 dark:bg-white/10"
       >
         {/* Login Card */}
-        <div
-          className="w-full sm:w-96 p-8 rounded-3xl 
-            backdrop-blur-lg bg-white/30 dark:bg-white/10 
-            border border-white/20 dark:border-white/10 shadow-lg 
-            transition-all duration-500"
-        >
+        <div className="w-full sm:w-96 p-8 rounded-3xl backdrop-blur-lg bg-white/30 dark:bg-white/10 border border-white/20 dark:border-white/10 shadow-lg transition-all duration-500">
           <h2 className="text-2xl font-bold text-lime-600 dark:text-lime-500 mb-8 text-center font-poppins">
             Login to TowerTrack
           </h2>
@@ -74,9 +85,7 @@ const Login = () => {
             <input
               type="email"
               placeholder="Email"
-              className="w-full px-4 py-3 rounded-xl bg-gray-200/60 dark:bg-white/10 
-                border border-white/20 dark:border-white/10 text-gray-800 dark:text-gray-200 
-                focus:outline-none focus:ring-2 focus:ring-lime-500"
+              className="w-full px-4 py-3 rounded-xl bg-gray-200/60 dark:bg-white/10 border border-white/20 dark:border-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-lime-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -85,9 +94,7 @@ const Login = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                className="w-full px-4 py-3 rounded-xl bg-gray-200/60 dark:bg-white/10 
-                  border border-white/20 dark:border-white/10 text-gray-800 dark:text-gray-200 
-                  focus:outline-none focus:ring-2 focus:ring-lime-500"
+                className="w-full px-4 py-3 rounded-xl bg-gray-200/60 dark:bg-white/10 border border-white/20 dark:border-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-lime-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -95,19 +102,14 @@ const Login = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-4 flex items-center cursor-pointer text-gray-600 dark:text-gray-400"
               >
-                {showPassword ? (
-                  <AiOutlineEyeInvisible className="text-xl" />
-                ) : (
-                  <AiOutlineEye className="text-xl" />
-                )}
+                {showPassword ? <AiOutlineEyeInvisible className="text-xl" /> : <AiOutlineEye className="text-xl" />}
               </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-lime-600 hover:bg-lime-700 text-white font-medium py-3 rounded-xl 
-                transition-all duration-300 flex items-center justify-center shadow-md cursor-pointer"
+              className="w-full bg-lime-600 hover:bg-lime-700 text-white font-medium py-3 rounded-xl transition-all duration-300 flex items-center justify-center shadow-md cursor-pointer"
             >
               {loading ? (
                 <span className="loader border-2 border-white border-t-transparent rounded-full w-5 h-5 animate-spin"></span>
@@ -125,9 +127,7 @@ const Login = () => {
 
           <button
             onClick={handleGoogleLogin}
-            className="w-full bg-gray-100 dark:bg-white/10 py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-white/20 
-              text-gray-800 dark:text-gray-200 border border-white/20 dark:border-white/10 
-              flex items-center justify-center gap-3 cursor-pointer"
+            className="w-full bg-gray-100 dark:bg-white/10 py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-white/20 text-gray-800 dark:text-gray-200 border border-white/20 dark:border-white/10 flex items-center justify-center gap-3 cursor-pointer"
           >
             <FcGoogle className="text-2xl" />
             Continue with Google
@@ -135,10 +135,7 @@ const Login = () => {
 
           <p className="mt-1 text-center text-sm text-gray-700 dark:text-gray-400">
             Don’t have an account?{" "}
-            <Link
-              to="/registration"
-              className="text-lime-600 dark:text-lime-500 hover:underline font-medium"
-            >
+            <Link to="/registration" className="text-lime-600 dark:text-lime-500 hover:underline font-medium">
               Register here
             </Link>
           </p>
