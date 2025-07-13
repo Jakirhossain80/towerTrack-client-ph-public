@@ -8,7 +8,14 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
+import axios from "axios";
 import app from "../firebase.config";
+
+// 🔐 Axios instance to communicate with backend JWT endpoints
+const axiosSecure = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
+  withCredentials: true, // Important for sending/receiving cookies
+});
 
 // Create the context
 export const AuthContext = createContext();
@@ -20,11 +27,19 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Observe auth state changes
+  // 🔄 Firebase Auth State Observer
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+
+        // 🔐 Send Firebase ID token to backend to get JWT in HTTP-only cookie
+        const idToken = await currentUser.getIdToken();
+        try {
+          await axiosSecure.post("/jwt", { token: idToken });
+        } catch (error) {
+          console.error("Failed to set JWT cookie:", error);
+        }
       } else {
         setUser(null);
       }
@@ -35,12 +50,12 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   // Signup
-  const createUser = async (email, password) => {
+  const createUser = (email, password) => {
     setLoading(true);
-    return await createUserWithEmailAndPassword(auth, email, password);
+    return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  // Email/Password login
+  // Email/Password Login
   const signIn = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
@@ -52,10 +67,15 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, googleProvider);
   };
 
-  // Logout
-  const logout = () => {
+  // 🔐 Logout (client + backend)
+  const logout = async () => {
     setLoading(true);
-    return signOut(auth);
+    try {
+      await axiosSecure.post("/logout"); // clears HTTP-only cookie
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   const authData = {
