@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +14,15 @@ const Apartment = () => {
   const { user, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [hasApplied, setHasApplied] = useState(false);
+
+  // 🆕 Rent filter state
+  const [minRent, setMinRent] = useState(0);
+  const [maxRent, setMaxRent] = useState(Infinity);
+
+  // 🆕 Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
@@ -31,6 +40,16 @@ const Apartment = () => {
     },
   });
 
+  useEffect(() => {
+    if (user?.email) {
+      axiosSecure.get(`/agreements?email=${user.email}`)
+        .then(res => {
+          if (res.data?.hasAgreement) setHasApplied(true);
+        })
+        .catch(() => {});
+    }
+  }, [user?.email]);
+
   const mutation = useMutation({
     mutationFn: async (data) => {
       const res = await axiosSecure.post("/agreements", data);
@@ -38,10 +57,16 @@ const Apartment = () => {
     },
     onSuccess: (data) => {
       Swal.fire("Success", "Agreement submitted successfully!", "success");
+      setHasApplied(true);
       queryClient.invalidateQueries(["apartments"]);
     },
     onError: (error) => {
-      Swal.fire("Error", error.response?.data?.message || "Something went wrong!", "error");
+      if (error.response?.status === 409) {
+        Swal.fire("Duplicate", "You've already applied for an apartment.", "warning");
+        setHasApplied(true);
+      } else {
+        Swal.fire("Error", error.response?.data?.message || "Something went wrong!", "error");
+      }
     },
   });
 
@@ -64,6 +89,19 @@ const Apartment = () => {
     mutation.mutate(agreementData);
   };
 
+  // 🧮 Filter and paginate
+  const filteredApartments = apartments?.filter(apt => apt.rent >= minRent && apt.rent <= maxRent);
+
+  const totalPages = Math.ceil(filteredApartments?.length / itemsPerPage);
+  const startIdx = (currentPage - 1) * itemsPerPage;
+  const paginatedApartments = filteredApartments?.slice(startIdx, startIdx + itemsPerPage);
+
+  const goToPage = (pageNum) => {
+    if (pageNum >= 1 && pageNum <= totalPages) {
+      setCurrentPage(pageNum);
+    }
+  };
+
   if (loading || isLoading) return <Loading />;
   if (isError) return <p className="text-center text-rose-500">Failed to load apartments.</p>;
 
@@ -76,8 +114,35 @@ const Apartment = () => {
         Available Apartments
       </h1>
 
+      {/* 🔍 Rent Range Filter */}
+      <div className="max-w-3xl mx-auto mb-10 flex flex-col sm:flex-row items-center gap-4">
+        <input
+          type="number"
+          value={minRent === 0 ? "" : minRent}
+          onChange={(e) => setMinRent(Number(e.target.value) || 0)}
+          placeholder="Min Rent"
+          className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-800 dark:text-gray-200 w-full sm:w-auto"
+        />
+        <input
+          type="number"
+          value={maxRent === Infinity ? "" : maxRent}
+          onChange={(e) => setMaxRent(Number(e.target.value) || Infinity)}
+          placeholder="Max Rent"
+          className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-800 dark:text-gray-200 w-full sm:w-auto"
+        />
+        <button
+          onClick={() => {
+            setMinRent(0);
+            setMaxRent(Infinity);
+          }}
+          className="px-4 py-2 rounded-md bg-rose-500 text-white hover:bg-rose-600 cursor-pointer"
+        >
+          Clear Filter
+        </button>
+      </div>
+
       <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {apartments?.map((apt) => (
+        {paginatedApartments?.map((apt) => (
           <div
             key={apt._id}
             data-aos="zoom-in"
@@ -101,7 +166,8 @@ const Apartment = () => {
               </p>
               <button
                 onClick={() => handleAgreement(apt)}
-                className="mt-4 w-full py-2 px-4 rounded-full bg-lime-600 hover:bg-lime-700 text-white font-semibold transition-all duration-300 cursor-pointer"
+                disabled={hasApplied}
+                className="mt-4 w-full py-2 px-4 rounded-full bg-lime-600 hover:bg-lime-700 text-white font-semibold transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Agreement
               </button>
@@ -109,6 +175,39 @@ const Apartment = () => {
           </div>
         ))}
       </div>
+
+      {/* 📄 Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="mt-12 flex justify-center items-center gap-2 flex-wrap">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 rounded-md border dark:border-white/20 bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 disabled:opacity-50 cursor-pointer"
+          >
+            Previous
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => goToPage(page)}
+              className={`px-3 py-1 rounded-md border dark:border-white/20 font-medium transition-all duration-300 cursor-pointer ${
+                page === currentPage
+                  ? "bg-lime-600 text-white"
+                  : "bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 rounded-md border dark:border-white/20 bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
