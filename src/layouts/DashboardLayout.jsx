@@ -1,37 +1,51 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import {
   FiMenu,
   FiX,
   FiLogOut,
-  FiUser, 
+  FiUser,
 } from "react-icons/fi";
 import { TfiAnnouncement } from "react-icons/tfi";
+import { FaUsersCog } from "react-icons/fa";
+import { MdApartment } from "react-icons/md";
+import { TbUsersGroup } from "react-icons/tb";
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
 import { Link } from "react-router";
+import useUserRole from "../hooks/useUserRole";
 
 const DashboardLayout = () => {
   const { user, logOut, loading } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [role, setRole] = useState(null);
 
-  useEffect(() => {
-    setRole("user");
-  }, [user]);
+  const { role, isLoading } = useUserRole();
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const handleLogout = () => logOut();
 
+  if (loading || isLoading) return <Loading />;
+
+  // 🎯 Role-based navigation items
   const navLinks = [
-    
-    {  path: "/dashboard/my-profile", label: "MyProfile", icon: <FiUser /> },
-    {  path: "/dashboard/announcements", label: "Announcements", icon: <TfiAnnouncement /> },
+    { path: "/dashboard/my-profile", label: "My Profile", icon: <FiUser /> },
+    { path: "/dashboard/announcements", label: "Announcements", icon: <TfiAnnouncement /> },
   ];
 
-  if (loading || !role) return <Loading />;
+  if (role === "admin") {
+    navLinks.push(
+      { path: "/dashboard/manage-users", label: "Manage Users", icon: <FaUsersCog /> },
+      { path: "/dashboard/all-agreements", label: "Agreements", icon: <MdApartment /> }
+    );
+  }
+
+  if (role === "member") {
+    navLinks.push(
+      { path: "/dashboard/my-residents", label: "My Residents", icon: <TbUsersGroup /> }
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900 transition-all duration-500">
