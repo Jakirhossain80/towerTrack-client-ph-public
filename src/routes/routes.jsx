@@ -12,6 +12,7 @@ import Announcements from "../pages/dashboardPages/Announcements";
 import AdminProfile from "../pages/dashboardPages/AdminProfile";
 import AdminRoute from "../provider/AdminRoute";
 import UserRoute from "../provider/UserRoute";
+import MakeAnnouncement from "../pages/dashboardPages/MakeAnnouncement";
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +71,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <AdminProfile />
+          </AdminRoute>
+        )
+      },
+      {
+        path: "/dashboard/makeAnnouncement",
+        element: (
+          <AdminRoute>
+            <MakeAnnouncement />
           </AdminRoute>
         )
       },

@@ -49,6 +49,7 @@ const DashboardLayout = () => {
   if (role === "admin") {
     navLinks.push(
       { path: "/dashboard/adminProfile", label: "Admin Profile", icon: <FaUsersCog /> },
+      { path: "/dashboard/makeAnnouncement", label: "Make Announcement", icon: <TfiAnnouncement /> },
       { path: "/dashboard/all-agreements", label: "Agreements", icon: <MdApartment /> }
     );
   }
