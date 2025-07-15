@@ -7,8 +7,8 @@ import Login from "../pages/generalPages/Login";
 import Registration from "../pages/generalPages/Registration";
 import DashboardLayout from "../layouts/DashboardLayout";
 import PrivateRoute from "../provider/PrivateRoute";
-
-
+import MyProfile from "../pages/dashboardPages/MyProfile";
+import Announcements from "../pages/dashboardPages/Announcements";
 
 export const router = createBrowserRouter([
   {
@@ -37,7 +37,6 @@ export const router = createBrowserRouter([
     ],
   },
 
-
   {
     path: "/dashboard",
     element: (
@@ -47,19 +46,18 @@ export const router = createBrowserRouter([
     ),
 
     children: [
-      // {
-      //   path: "/dashboard/myParcels",
-      //   Component: MyParcels,
-      // },
-    ]
+      {
+        path: "/dashboard/my-profile",
+        element: <MyProfile />,
+      },
+      {
+        path: "/dashboard/announcements",
+        element: <Announcements />,
+      },
+    ],
+  },
 
-    },
-
- 
- 
- 
- 
-    {
+  {
     path: "/*",
     element: <NotFound />,
   },

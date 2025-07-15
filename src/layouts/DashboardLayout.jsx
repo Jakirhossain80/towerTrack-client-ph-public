@@ -5,9 +5,9 @@ import {
   FiMenu,
   FiX,
   FiLogOut,
-  FiUser,
-  FiHome,
+  FiUser, 
 } from "react-icons/fi";
+import { TfiAnnouncement } from "react-icons/tfi";
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
@@ -26,8 +26,9 @@ const DashboardLayout = () => {
   const handleLogout = () => logOut();
 
   const navLinks = [
-    { path: "/", label: "Home", icon: <FiHome /> },
-    { path: "/dashboard/profile", label: "Profile", icon: <FiUser /> },
+    
+    {  path: "/dashboard/my-profile", label: "MyProfile", icon: <FiUser /> },
+    {  path: "/dashboard/announcements", label: "Announcements", icon: <TfiAnnouncement /> },
   ];
 
   if (loading || !role) return <Loading />;
@@ -36,7 +37,7 @@ const DashboardLayout = () => {
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900 transition-all duration-500">
       {/* Sidebar */}
       <div
-        className={`fixed z-30 inset-y-0 left-0 w-64 transition-transform duration-300 transform bg-white dark:bg-slate-100 border-r dark:border-gray-700 lg:static lg:translate-x-0 shadow-lg transition-all duration-500
+        className={`fixed z-30 inset-y-0 left-0 w-64 transform bg-white dark:bg-slate-100 border-r dark:border-gray-700 lg:static lg:translate-x-0 shadow-lg transition-all duration-500
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <Link
