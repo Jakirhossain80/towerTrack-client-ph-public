@@ -9,6 +9,9 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import PrivateRoute from "../provider/PrivateRoute";
 import MyProfile from "../pages/dashboardPages/MyProfile";
 import Announcements from "../pages/dashboardPages/Announcements";
+import AdminProfile from "../pages/dashboardPages/AdminProfile";
+import AdminRoute from "../provider/AdminRoute";
+import UserRoute from "../provider/UserRoute";
 
 export const router = createBrowserRouter([
   {
@@ -48,11 +51,27 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/dashboard/my-profile",
-        element: <MyProfile />,
+        element: (
+          <UserRoute>
+            <MyProfile />
+          </UserRoute>
+        )
       },
       {
         path: "/dashboard/announcements",
-        element: <Announcements />,
+        element: (
+          <UserRoute>
+            <Announcements />
+          </UserRoute>
+        )
+      },
+      {
+        path: "/dashboard/adminProfile",
+        element: (
+          <AdminRoute>
+            <AdminProfile />
+          </AdminRoute>
+        )
       },
     ],
   },

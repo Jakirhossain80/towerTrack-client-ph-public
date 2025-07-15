@@ -1,22 +1,31 @@
 // src/hooks/useUserRole.js
-import { useQuery } from "@tanstack/react-query";
-import axiosSecure from "../utils/axiosSecure";
 import { useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../provider/AuthProvider";
+import axios from "axios";
+
+const axiosSecure = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
+  withCredentials: true,
+});
 
 const useUserRole = () => {
   const { user } = useContext(AuthContext);
 
-  const { data: role, isLoading } = useQuery({
+  const {
+    data: role = null,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["userRole", user?.email],
-    enabled: !!user?.email,
+    enabled: !!user?.email, // Only run query if email is available
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/role/${user.email}`);
       return res.data.role;
     },
   });
 
-  return { role, isLoading };
+  return { role, isLoading, isError };
 };
 
 export default useUserRole;

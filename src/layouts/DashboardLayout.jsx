@@ -21,14 +21,14 @@ const DashboardLayout = () => {
   const { user, logout, loading } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { role, isLoading } = useUserRole();
-  const navigate = useNavigate(); // Required for redirecting after logout
+  const navigate = useNavigate();
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   const handleLogout = async () => {
     try {
-      await logout(); // Firebase Auth sign out
-      navigate("/login"); // Redirect to login page
+      await logout();
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -36,14 +36,19 @@ const DashboardLayout = () => {
 
   if (loading || isLoading) return <Loading />;
 
-  const navLinks = [
-    { path: "/dashboard/my-profile", label: "My Profile", icon: <FiUser /> },
-    { path: "/dashboard/announcements", label: "Announcements", icon: <TfiAnnouncement /> },
-  ];
+  // ⬇️ Only render these routes for "user" role
+  const navLinks = [];
+
+  if (role === "user") {
+    navLinks.push(
+      { path: "/dashboard/my-profile", label: "My Profile", icon: <FiUser /> },
+      { path: "/dashboard/announcements", label: "Announcements", icon: <TfiAnnouncement /> }
+    );
+  }
 
   if (role === "admin") {
     navLinks.push(
-      { path: "/dashboard/manage-users", label: "Manage Users", icon: <FaUsersCog /> },
+      { path: "/dashboard/adminProfile", label: "Admin Profile", icon: <FaUsersCog /> },
       { path: "/dashboard/all-agreements", label: "Agreements", icon: <MdApartment /> }
     );
   }
