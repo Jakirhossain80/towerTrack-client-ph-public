@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import {
   FiMenu,
@@ -18,17 +18,24 @@ import { Link } from "react-router";
 import useUserRole from "../hooks/useUserRole";
 
 const DashboardLayout = () => {
-  const { user, logOut, loading } = useContext(AuthContext);
+  const { user, logout, loading } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const { role, isLoading } = useUserRole();
+  const navigate = useNavigate(); // Required for redirecting after logout
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-  const handleLogout = () => logOut();
+
+  const handleLogout = async () => {
+    try {
+      await logout(); // Firebase Auth sign out
+      navigate("/login"); // Redirect to login page
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   if (loading || isLoading) return <Loading />;
 
-  // 🎯 Role-based navigation items
   const navLinks = [
     { path: "/dashboard/my-profile", label: "My Profile", icon: <FiUser /> },
     { path: "/dashboard/announcements", label: "Announcements", icon: <TfiAnnouncement /> },

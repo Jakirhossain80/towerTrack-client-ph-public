@@ -11,13 +11,13 @@ import {
 import axios from "axios";
 import app from "../firebase.config";
 
-// 🔐 Axios instance to communicate with backend JWT endpoints
+// 🔐 Axios instance with credentials for HTTP-only cookie support
 const axiosSecure = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
-  withCredentials: true, // Important for sending/receiving cookies
+  withCredentials: true,
 });
 
-// Create the context
+// Create context
 export const AuthContext = createContext();
 
 const auth = getAuth(app);
@@ -27,54 +27,75 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Firebase Auth State Observer
+  // 🔄 Firebase auth state listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-
-        // 🔐 Send Firebase ID token to backend to get JWT in HTTP-only cookie
-        const idToken = await currentUser.getIdToken();
-        try {
-          await axiosSecure.post("/jwt", { token: idToken });
-        } catch (error) {
-          console.error("Failed to set JWT cookie:", error);
-        }
-      } else {
-        setUser(null);
-      }
+      setUser(currentUser);
       setLoading(false);
+
+      if (currentUser) {
+        try {
+          const idToken = await currentUser.getIdToken(true);
+
+          // 🔐 Send Firebase token to backend to get JWT cookie
+          await axiosSecure.post("/jwt", { token: idToken });
+
+          // 🧩 Try to insert user into DB if not exists
+          const userData = {
+            email: currentUser.email,
+            name: currentUser.displayName || "Unnamed",
+            role: "user",
+          };
+
+          await axiosSecure.post("/users", userData)
+            .then(() => {
+              console.log("✅ User created in DB");
+            })
+            .catch((err) => {
+              if (err.response?.status === 409) {
+                console.log("⚠️ User already exists, skipping DB insert");
+              } else {
+                console.error("❌ Failed to create user:", err);
+              }
+            });
+        } catch (error) {
+          console.error("❌ JWT exchange or DB insert failed:", error);
+        }
+      }
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Signup
+  // Register
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  // Email/Password Login
+  // Login with email/password
   const signIn = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // Google Login
+  // Login with Google
   const googleLogin = () => {
     setLoading(true);
     return signInWithPopup(auth, googleProvider);
   };
 
-  // 🔐 Logout (client + backend)
+  // Logout from both client and backend
   const logout = async () => {
     setLoading(true);
     try {
       await axiosSecure.post("/logout"); // clears HTTP-only cookie
       await signOut(auth);
+      setUser(null);
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
