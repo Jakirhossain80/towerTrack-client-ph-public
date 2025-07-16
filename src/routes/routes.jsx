@@ -15,6 +15,7 @@ import UserRoute from "../provider/UserRoute";
 import MakeAnnouncement from "../pages/dashboardPages/MakeAnnouncement";
 import ManageCoupons from "../pages/dashboardPages/ManageCoupons";
 import AgreementRequest from "../pages/dashboardPages/AgreementRequest";
+import MemberRoute from "../provider/MemberRoute";
 
 export const router = createBrowserRouter([
   {
@@ -55,17 +56,17 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/my-profile",
         element: (
-          <UserRoute>
+          <MemberRoute>
             <MyProfile />
-          </UserRoute>
+          </MemberRoute>
         )
       },
       {
         path: "/dashboard/announcements",
         element: (
-          <UserRoute>
+          <MemberRoute>
             <Announcements />
-          </UserRoute>
+          </MemberRoute>
         )
       },
       {

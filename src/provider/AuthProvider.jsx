@@ -40,26 +40,24 @@ const AuthProvider = ({ children }) => {
           // 🔐 Send Firebase token to backend to get JWT cookie
           await axiosSecure.post("/jwt", { token: idToken });
 
-          // 🧩 Try to insert user into DB if not exists
-          const userData = {
-            email: currentUser.email,
-            name: currentUser.displayName || "Unnamed",
-            role: "user",
-          };
+          // 🧩 Check if user already exists in DB
+          const checkRes = await axiosSecure.get(`/users/${currentUser.email}`).catch(() => null);
 
-          await axiosSecure.post("/users", userData)
-            .then(() => {
-              console.log("✅ User created in DB");
-            })
-            .catch((err) => {
-              if (err.response?.status === 409) {
-                console.log("⚠️ User already exists, skipping DB insert");
-              } else {
-                console.error("❌ Failed to create user:", err);
-              }
-            });
+          if (!checkRes?.data?.exists) {
+            // ✅ Insert user if not exists
+            const userData = {
+              email: currentUser.email,
+              name: currentUser.displayName || "Unnamed",
+              role: "user",
+            };
+
+            await axiosSecure.post("/users", userData);
+            console.log("✅ User created in DB");
+          } else {
+            console.log("⚠️ User already exists, skipping DB insert");
+          }
         } catch (error) {
-          console.error("❌ JWT exchange or DB insert failed:", error);
+          console.error("❌ JWT exchange or user handling failed:", error);
         }
       }
     });

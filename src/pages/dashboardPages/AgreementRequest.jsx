@@ -63,7 +63,7 @@ const AgreementRequest = () => {
       </h2>
 
       <div className="overflow-x-auto rounded shadow">
-        <table className="min-w-full text-sm text-gray-800 dark:text-gray-200 font-inter">
+        <table className="min-w-full text-sm text-gray-800 dark:text-gray-200 font-inter text-center">
           <thead className="bg-gray-200 dark:bg-slate-700">
             <tr>
               <th className="px-4 py-2">User Name</th>
@@ -94,13 +94,13 @@ const AgreementRequest = () => {
                 <td className="px-4 py-2 space-x-2">
                   <button
                     onClick={() => handleAction(req._id, req.userEmail, "accept")}
-                    className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded"
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded duration-300 cursor-pointer"
                   >
                     Accept
                   </button>
                   <button
                     onClick={() => handleAction(req._id, req.userEmail, "reject")}
-                    className="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded"
+                    className="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded  duration-300 cursor-pointer"
                   >
                     Reject
                   </button>

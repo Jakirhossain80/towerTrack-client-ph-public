@@ -1,3 +1,4 @@
+// Updated DashboardLayout.jsx
 import React, { useContext, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
@@ -33,10 +34,10 @@ const DashboardLayout = () => {
 
   if (loading || isLoading) return <Loading />;
 
-  // ⬇️ Only render these routes for "user" role
+  // ✅ Allow both "user" and "member" roles
   const navLinks = [];
 
-  if (role === "user") {
+  if (role === "user" || role === "member") {
     navLinks.push(
       { path: "/dashboard/my-profile", label: "My Profile", icon: <FiUser /> },
       {
@@ -73,7 +74,7 @@ const DashboardLayout = () => {
         path: "/dashboard/agreementRequest",
         label: "Agreement Request",
         icon: <LuHandshake />,
-      },
+      }
     );
   }
 
