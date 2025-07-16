@@ -1,5 +1,5 @@
-// ✅ ManageCoupons.jsx
-import { useContext, useState } from "react"
+// ✅ Updated ManageCoupons.jsx
+import { useContext, useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
 import axiosSecure from "../../utils/axiosSecure";
@@ -8,11 +8,13 @@ import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useEffect } from "react";
+import useUserRole from "../../hooks/useUserRole";
 
 const ManageCoupons = () => {
   const { user } = useContext(AuthContext);
+  const { role, isLoading: roleLoading } = useUserRole();
   const queryClient = useQueryClient();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
@@ -28,6 +30,7 @@ const ManageCoupons = () => {
     },
   });
 
+  // 🔁 Add or Edit Coupon Mutation
   const mutation = useMutation({
     mutationFn: async (coupon) => {
       const method = editData ? "patch" : "post";
@@ -45,6 +48,18 @@ const ManageCoupons = () => {
     },
   });
 
+  // 🗑️ Delete Coupon Mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => await axiosSecure.delete(`/coupons/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["coupons"]);
+      Swal.fire("Deleted!", "Coupon has been deleted.", "success");
+    },
+    onError: () => {
+      Swal.fire("Error", "Failed to delete coupon.", "error");
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -53,6 +68,7 @@ const ManageCoupons = () => {
     const discount = parseFloat(form.discount.value);
     const validTill = form.validTill.value;
     const code = form.code.value;
+
     if (!title || !description || !discount || !validTill || !code) return;
 
     const coupon = { title, description, discount, validTill, code };
@@ -75,26 +91,27 @@ const ManageCoupons = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosSecure.delete(`/coupons/${id}`).then(() => {
-          queryClient.invalidateQueries(["coupons"]);
-          Swal.fire("Deleted!", "Coupon has been deleted.", "success");
-        });
+        deleteMutation.mutate(id);
       }
     });
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading || roleLoading) return <Loading />;
 
   return (
     <div className="p-4 transition-all duration-500" data-aos="fade-up">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold font-poppins text-gray-800 dark:text-gray-200">Manage Coupons</h2>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="bg-lime-600 hover:bg-lime-700 text-white px-4 py-2 rounded flex items-center gap-2"
-        >
-          <FaPlus /> Add Coupon
-        </button>
+        <h2 className="text-2xl font-semibold font-poppins text-gray-800 dark:text-gray-200">
+          Manage Coupons
+        </h2>
+        {role === "admin" && (
+          <button
+            onClick={() => setModalOpen(true)}
+            className="bg-lime-600 hover:bg-lime-700 duration-300 text-white px-4 py-2 rounded flex items-center gap-2 cursor-pointer"
+          >
+            <FaPlus /> Add Coupon
+          </button>
+        )}
       </div>
 
       <div className="overflow-x-auto rounded shadow">
@@ -106,7 +123,7 @@ const ManageCoupons = () => {
               <th className="px-4 py-2 text-left">Discount %</th>
               <th className="px-4 py-2 text-left">Valid Till</th>
               <th className="px-4 py-2 text-left">Code</th>
-              <th className="px-4 py-2">Actions</th>
+              {role === "admin" && <th className="px-4 py-2 text-center">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -117,32 +134,31 @@ const ManageCoupons = () => {
                 <td className="px-4 py-2">{coupon.discount}%</td>
                 <td className="px-4 py-2">{coupon.validTill}</td>
                 <td className="px-4 py-2">{coupon.code}</td>
-                <td className="px-4 py-2 space-x-2 text-center">
-                  {user?.role === "admin" && (
-                    <>
-                      <button
-                        onClick={() => handleEdit(coupon)}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(coupon._id)}
-                        className="text-rose-600 hover:text-rose-800"
-                      >
-                        <FaTrash />
-                      </button>
-                    </>
-                  )}
-                </td>
+                {role === "admin" && (
+                  <td className="px-4 py-2 space-x-2 text-center">
+                    <button
+                      onClick={() => handleEdit(coupon)}
+                      className="text-blue-600 hover:text-blue-800 cursor-pointer duration-500"
+                    >
+                      <FaEdit className="w-6 h-6" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(coupon._id)}
+                      className="text-rose-600 hover:text-rose-800 cursor-pointer duration-500"
+                    >
+                      <FaTrash className="w-6 h-6"  />
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
+      {/* ➕ Add/Edit Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="min-h-screen fixed inset-0 bg-transparent backdrop-blur-sm bg-opacity-50 flex justify-center items-center z-50">
           <form
             onSubmit={handleSubmit}
             className="bg-white dark:bg-slate-800 p-6 rounded-md w-full max-w-lg shadow-xl space-y-4"
@@ -192,7 +208,7 @@ const ManageCoupons = () => {
             <div className="flex justify-between">
               <button
                 type="submit"
-                className="bg-lime-600 hover:bg-lime-700 text-white px-4 py-2 rounded"
+                className="bg-lime-600 hover:bg-lime-700 duration-300 text-white px-4 py-2 rounded cursor-pointer"
               >
                 {editData ? "Update" : "Submit"}
               </button>
@@ -202,7 +218,7 @@ const ManageCoupons = () => {
                   setModalOpen(false);
                   setEditData(null);
                 }}
-                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+                className="bg-gray-400 hover:bg-gray-500 duration-300 text-white px-4 py-2 rounded cursor-pointer"
               >
                 Cancel
               </button>

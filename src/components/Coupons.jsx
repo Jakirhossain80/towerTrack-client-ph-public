@@ -3,47 +3,41 @@ import React, { useEffect } from "react";
 import { FaTag, FaCalendarAlt, FaPercentage, FaCopy } from "react-icons/fa";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import axiosSecure from "../utils/axiosSecure";
+import { useQuery } from "@tanstack/react-query";
+import Swal from "sweetalert2";
+import Loading from "../utils/Loading";
 
-const mockCoupons = [
-  {
-    _id: "c1",
-    title: "Early Bird Rent Discount",
-    description: "Get 10% off your rent by paying before the 5th of the month.",
-    discount: "10% OFF",
-    validTill: "2025-12-31",
-  },
-  {
-    _id: "c2",
-    title: "Maintenance Savings",
-    description: "Enjoy 15% off on maintenance fees this quarter.",
-    discount: "15% OFF",
-    validTill: "2025-10-15",
-  },
-  {
-    _id: "c3",
-    title: "Gym Subscription Offer",
-    description: "Save 20% on your 6-month gym subscription.",
-    discount: "20% OFF",
-    validTill: "2025-09-30",
-  },
-  {
-    _id: "c4",
-    title: "Referral Bonus",
-    description: "Refer a new resident and get a service fee waiver.",
-    discount: "100% OFF",
-    validTill: "2025-11-01",
-  },
-];
+// ✅ Axios default for cookies
+axiosSecure.defaults.withCredentials = true;
 
 const Coupons = () => {
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
+  // ✅ Fetch coupons from MongoDB Atlas
+  const { data: coupons = [], isLoading } = useQuery({
+    queryKey: ["coupons"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/coupons");
+      return res.data;
+    },
+  });
+
+  // ✅ Copy coupon code to clipboard
   const handleCopy = (code) => {
     navigator.clipboard.writeText(code);
-    alert(`Copied "${code}" to clipboard!`);
+    Swal.fire({
+      title: "Copied!",
+      text: `"${code}" copied to clipboard.`,
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <section className="bg-gray-50 dark:bg-slate-800 py-16 px-4 sm:px-6 lg:px-20 transition-all duration-500">
@@ -58,9 +52,9 @@ const Coupons = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mockCoupons.map((coupon) => (
+          {coupons?.map((coupon) => (
             <div
-              key={coupon._id}
+              key={coupon?._id}
               data-aos="zoom-in"
               className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-8 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 flex flex-col justify-between"
             >
@@ -68,31 +62,31 @@ const Coupons = () => {
                 <div className="flex items-center gap-2 text-lime-500 dark:text-lime-400 mb-2">
                   <FaTag className="w-5 h-5" />
                   <h3 className="text-lg font-semibold font-poppins text-gray-800 dark:text-gray-200">
-                    {coupon.title}
+                    {coupon?.title}
                   </h3>
                 </div>
                 <p className="text-sm font-inter text-gray-600 dark:text-gray-400 mb-4">
-                  {coupon.description}
+                  {coupon?.description}
                 </p>
                 <div className="flex items-center gap-2 mb-2">
                   <FaPercentage className="text-emerald-500 dark:text-emerald-400 w-4 h-4" />
                   <span className="text-sm font-medium font-inter text-gray-700 dark:text-gray-300">
-                    {coupon.discount}
+                    {coupon?.discount}% OFF
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <FaCalendarAlt className="text-emerald-500 dark:text-emerald-400 w-4 h-4" />
                   <span className="text-sm text-gray-600 dark:text-gray-400 font-inter">
-                    Valid Till: {coupon.validTill}
+                    Valid Till: {coupon?.validTill}
                   </span>
                 </div>
               </div>
 
-              {/* Copy button */}
+              {/* 📋 Copy button */}
               <button
-                onClick={() => handleCopy(coupon.title)}
+                onClick={() => handleCopy(coupon?.code)}
                 className="mt-6 flex items-center justify-center gap-2 bg-lime-500 hover:bg-lime-600 text-white text-sm font-medium py-2 px-4 rounded-md transition-all duration-300 cursor-pointer"
-                title="Copy Coupon Title"
+                title="Copy Coupon Code"
               >
                 <FaCopy className="w-4 h-4" />
                 Copy Code
