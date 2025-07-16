@@ -13,6 +13,7 @@ import AdminProfile from "../pages/dashboardPages/AdminProfile";
 import AdminRoute from "../provider/AdminRoute";
 import UserRoute from "../provider/UserRoute";
 import MakeAnnouncement from "../pages/dashboardPages/MakeAnnouncement";
+import ManageCoupons from "../pages/dashboardPages/ManageCoupons";
 
 export const router = createBrowserRouter([
   {
@@ -79,6 +80,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <MakeAnnouncement />
+          </AdminRoute>
+        )
+      },
+      {
+        path: "/dashboard/manageCoupons",
+        element: (
+          <AdminRoute>
+            <ManageCoupons />
           </AdminRoute>
         )
       },

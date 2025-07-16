@@ -1,16 +1,12 @@
 import React, { useContext, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
-import {
-  FiMenu,
-  FiX,
-  FiLogOut,
-  FiUser,
-} from "react-icons/fi";
+import { FiMenu, FiX, FiLogOut, FiUser } from "react-icons/fi";
 import { TfiAnnouncement } from "react-icons/tfi";
 import { FaUsersCog } from "react-icons/fa";
 import { MdApartment } from "react-icons/md";
 import { TbUsersGroup } from "react-icons/tb";
+import { RiCouponLine } from "react-icons/ri";
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
@@ -42,22 +38,45 @@ const DashboardLayout = () => {
   if (role === "user") {
     navLinks.push(
       { path: "/dashboard/my-profile", label: "My Profile", icon: <FiUser /> },
-      { path: "/dashboard/announcements", label: "Announcements", icon: <TfiAnnouncement /> }
+      {
+        path: "/dashboard/announcements",
+        label: "Announcements",
+        icon: <TfiAnnouncement />,
+      }
     );
   }
 
   if (role === "admin") {
     navLinks.push(
-      { path: "/dashboard/adminProfile", label: "Admin Profile", icon: <FaUsersCog /> },
-      { path: "/dashboard/makeAnnouncement", label: "Make Announcement", icon: <TfiAnnouncement /> },
-      { path: "/dashboard/all-agreements", label: "Agreements", icon: <MdApartment /> }
+      {
+        path: "/dashboard/adminProfile",
+        label: "Admin Profile",
+        icon: <FaUsersCog />,
+      },
+      {
+        path: "/dashboard/makeAnnouncement",
+        label: "Make Announcement",
+        icon: <TfiAnnouncement />,
+      },
+      {
+        path: "/dashboard/manageCoupons",
+        label: "Manage Coupons",
+        icon: <RiCouponLine />,
+      },
+      {
+        path: "/dashboard/all-agreements",
+        label: "Agreements",
+        icon: <MdApartment />,
+      }
     );
   }
 
   if (role === "member") {
-    navLinks.push(
-      { path: "/dashboard/my-residents", label: "My Residents", icon: <TbUsersGroup /> }
-    );
+    navLinks.push({
+      path: "/dashboard/my-residents",
+      label: "My Residents",
+      icon: <TbUsersGroup />,
+    });
   }
 
   return (
@@ -84,10 +103,15 @@ const DashboardLayout = () => {
         </Link>
 
         {/* User Info */}
-        <Link to="/" className="p-4 border-b border-gray-200 dark:border-gray-700 transition-all duration-500">
+        <Link
+          to="/"
+          className="p-4 border-b border-gray-200 dark:border-gray-700 transition-all duration-500"
+        >
           <div className="text-center transition-all duration-500">
             <img
-              src={user?.photoURL || "https://i.ibb.co/0jqHpnp/default-user.png"}
+              src={
+                user?.photoURL || "https://i.ibb.co/0jqHpnp/default-user.png"
+              }
               alt="User"
               className="mx-auto h-16 w-16 rounded-full object-cover border-2 border-lime-500 transition-all duration-500"
             />
@@ -97,7 +121,9 @@ const DashboardLayout = () => {
             <p className="text-sm text-gray-500 dark:text-gray-600 transition-all duration-500">
               {user?.email}
             </p>
-            <span className="text-xs text-lime-500 transition-all duration-500">Role: {role}</span>
+            <span className="text-xs text-lime-500 transition-all duration-500">
+              Role: {role}
+            </span>
           </div>
         </Link>
 
