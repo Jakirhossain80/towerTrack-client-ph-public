@@ -7,6 +7,7 @@ import { FaUsersCog } from "react-icons/fa";
 import { MdApartment } from "react-icons/md";
 import { TbUsersGroup } from "react-icons/tb";
 import { RiCouponLine } from "react-icons/ri";
+import { LuHandshake } from "react-icons/lu";
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
@@ -67,7 +68,12 @@ const DashboardLayout = () => {
         path: "/dashboard/all-agreements",
         label: "Agreements",
         icon: <MdApartment />,
-      }
+      },
+      {
+        path: "/dashboard/agreementRequest",
+        label: "Agreement Request",
+        icon: <LuHandshake />,
+      },
     );
   }
 
