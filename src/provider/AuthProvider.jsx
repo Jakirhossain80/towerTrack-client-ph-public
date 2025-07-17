@@ -7,6 +7,7 @@ import {
   signOut,
   signInWithPopup,
   GoogleAuthProvider,
+  updateProfile,
 } from "firebase/auth";
 import axios from "axios";
 import app from "../firebase.config";
@@ -52,7 +53,7 @@ const AuthProvider = ({ children }) => {
             };
 
             await axiosSecure.post("/users", userData);
-            console.log("✅ User created in DB");
+            //console.log("✅ User created in DB");
           } else {
             console.log("⚠️ User already exists, skipping DB insert");
           }
@@ -66,10 +67,13 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   // Register
-  const createUser = (email, password) => {
-    setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
-  };
+  const createUser = async (email, password, name) => {
+  setLoading(true);
+  const result = await createUserWithEmailAndPassword(auth, email, password);
+  await updateProfile(result.user, { displayName: name }); // ✅ Set displayName
+  return result;
+};
+
 
   // Login with email/password
   const signIn = (email, password) => {

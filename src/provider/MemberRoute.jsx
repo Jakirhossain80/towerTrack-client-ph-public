@@ -23,3 +23,4 @@ const MemberRoute = ({ children }) => {
 };
 
 export default MemberRoute;
+

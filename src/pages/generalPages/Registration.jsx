@@ -71,7 +71,7 @@ const Registration = () => {
     if (!validatePassword(password)) return;
 
     try {
-      const result = await createUser(email, password);
+      const result = await createUser(email, password, name);
       const user = result.user;
 
       await updateProfile(user, {
@@ -88,7 +88,7 @@ const Registration = () => {
         showConfirmButton: false,
       });
 
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       Swal.fire('Error', error.message, 'error');
     }
