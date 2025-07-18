@@ -9,6 +9,7 @@ import { MdApartment } from "react-icons/md";
 import { TbUsersGroup } from "react-icons/tb";
 import { RiCouponLine } from "react-icons/ri";
 import { LuHandshake } from "react-icons/lu";
+import { FaPeopleLine } from "react-icons/fa6";
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
@@ -56,32 +57,38 @@ const DashboardLayout = () => {
         icon: <FaUsersCog />,
       },
       {
+        path: "/dashboard/manageMembers",
+        label: "Manage Members",
+        icon: <FaPeopleLine />,
+      },
+      {
         path: "/dashboard/makeAnnouncement",
         label: "Make Announcement",
         icon: <TfiAnnouncement />,
-      },
-      {
-        path: "/dashboard/manageCoupons",
-        label: "Manage Coupons",
-        icon: <RiCouponLine />,
       },
 
       {
         path: "/dashboard/agreementRequest",
         label: "Agreement Request",
         icon: <LuHandshake />,
+      },
+      {
+        path: "/dashboard/manageCoupons",
+        label: "Manage Coupons",
+        icon: <RiCouponLine />,
       }
     );
   }
 
   if (role === "member") {
-    navLinks.push(
-    //   {
-    //   path: "/dashboard/my-residents",
-    //   label: "My Residents",
-    //   icon: <TbUsersGroup />,
-    // }
-  );
+    navLinks
+      .push
+      //   {
+      //   path: "/dashboard/my-residents",
+      //   label: "My Residents",
+      //   icon: <TbUsersGroup />,
+      // }
+      ();
   }
 
   return (

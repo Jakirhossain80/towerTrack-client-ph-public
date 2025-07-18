@@ -16,6 +16,7 @@ import MakeAnnouncement from "../pages/dashboardPages/MakeAnnouncement";
 import ManageCoupons from "../pages/dashboardPages/ManageCoupons";
 import AgreementRequest from "../pages/dashboardPages/AgreementRequest";
 import MemberRoute from "../provider/MemberRoute";
+import ManageMembers from "../pages/dashboardPages/ManageMembers";
 
 export const router = createBrowserRouter([
   {
@@ -98,6 +99,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <AgreementRequest />
+          </AdminRoute>
+        )
+      },
+      {
+        path: "/dashboard/manageMembers",
+        element: (
+          <AdminRoute>
+            <ManageMembers />
           </AdminRoute>
         )
       },
