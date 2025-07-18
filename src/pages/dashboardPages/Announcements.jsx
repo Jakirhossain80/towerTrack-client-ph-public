@@ -2,13 +2,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
-import axiosSecure from "../../utils/useAxiosSecure";
+import useAxiosSecure from "../../utils/useAxiosSecure";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { FaBullhorn } from "react-icons/fa";
 
 const Announcements = () => {
+  const axiosSecure = useAxiosSecure(); // ✅ get the Axios instance
+
   const { user } = useContext(AuthContext);
 
   // Initialize AOS animations

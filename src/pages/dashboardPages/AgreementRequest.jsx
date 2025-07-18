@@ -1,7 +1,7 @@
 // src/components/dashboard/AgreementRequest.jsx
 import { useContext, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axiosSecure from "../../utils/useAxiosSecure";
+import useAxiosSecure from "../../utils/useAxiosSecure";
 import { AuthContext } from "../../provider/AuthProvider";
 import Loading from "../../utils/Loading";
 import Swal from "sweetalert2";
@@ -9,6 +9,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 const AgreementRequest = () => {
+  const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
   const queryClient = useQueryClient();
 

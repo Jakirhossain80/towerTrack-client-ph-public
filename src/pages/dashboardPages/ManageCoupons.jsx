@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
-import axiosSecure from "../../utils/useAxiosSecure";
+import useAxiosSecure from "../../utils/useAxiosSecure";
 import Swal from "sweetalert2";
 import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import Loading from "../../utils/Loading";
@@ -11,6 +11,7 @@ import "aos/dist/aos.css";
 import useUserRole from "../../hooks/useUserRole";
 
 const ManageCoupons = () => {
+  const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
   const { role, isLoading: roleLoading } = useUserRole();
   const queryClient = useQueryClient();

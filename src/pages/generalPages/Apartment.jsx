@@ -7,20 +7,20 @@ import { FaMoneyBill } from "react-icons/fa";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Swal from "sweetalert2";
-import axiosSecure from "../../utils/useAxiosSecure";
+import useAxiosSecure from "../../utils/useAxiosSecure";
+
 import Loading from "../../utils/Loading";
 
 const Apartment = () => {
+  const axiosSecure = useAxiosSecure();
+
   const { user, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [hasApplied, setHasApplied] = useState(false);
 
-  // 🆕 Rent filter state
   const [minRent, setMinRent] = useState(0);
   const [maxRent, setMaxRent] = useState(Infinity);
-
-  // 🆕 Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -42,8 +42,9 @@ const Apartment = () => {
 
   useEffect(() => {
     if (user?.email) {
-      axiosSecure.get(`/agreements?email=${user.email}`)
-        .then(res => {
+      axiosSecure
+        .get(`/agreements?email=${user.email}`)
+        .then((res) => {
           if (res.data?.hasAgreement) setHasApplied(true);
         })
         .catch(() => {});
@@ -55,17 +56,25 @@ const Apartment = () => {
       const res = await axiosSecure.post("/agreements", data);
       return res.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       Swal.fire("Success", "Agreement submitted successfully!", "success");
       setHasApplied(true);
       queryClient.invalidateQueries(["apartments"]);
     },
     onError: (error) => {
       if (error.response?.status === 409) {
-        Swal.fire("Duplicate", "You've already applied for an apartment.", "warning");
+        Swal.fire(
+          "Duplicate",
+          "You've already applied for an apartment.",
+          "warning"
+        );
         setHasApplied(true);
       } else {
-        Swal.fire("Error", error.response?.data?.message || "Something went wrong!", "error");
+        Swal.fire(
+          "Error",
+          error.response?.data?.message || "Something went wrong!",
+          "error"
+        );
       }
     },
   });
@@ -89,12 +98,16 @@ const Apartment = () => {
     mutation.mutate(agreementData);
   };
 
-  // 🧮 Filter and paginate
-  const filteredApartments = apartments?.filter(apt => apt.rent >= minRent && apt.rent <= maxRent);
+  const filteredApartments = apartments?.filter(
+    (apt) => apt.rent >= minRent && apt.rent <= maxRent
+  );
 
   const totalPages = Math.ceil(filteredApartments?.length / itemsPerPage);
   const startIdx = (currentPage - 1) * itemsPerPage;
-  const paginatedApartments = filteredApartments?.slice(startIdx, startIdx + itemsPerPage);
+  const paginatedApartments = filteredApartments?.slice(
+    startIdx,
+    startIdx + itemsPerPage
+  );
 
   const goToPage = (pageNum) => {
     if (pageNum >= 1 && pageNum <= totalPages) {
@@ -103,7 +116,10 @@ const Apartment = () => {
   };
 
   if (loading || isLoading) return <Loading />;
-  if (isError) return <p className="text-center text-rose-500">Failed to load apartments.</p>;
+  if (isError)
+    return (
+      <p className="text-center text-rose-500">Failed to load apartments.</p>
+    );
 
   return (
     <div className="px-4 py-12 bg-gray-50 dark:bg-gray-900 transition-all duration-500 min-h-screen">
@@ -158,8 +174,12 @@ const Apartment = () => {
                 <MdApartment className="text-xl text-emerald-500" />
                 <span className="text-lg font-medium">{apt.apartmentNo}</span>
               </div>
-              <p>Floor: <span className="font-semibold">{apt.floor}</span></p>
-              <p>Block: <span className="font-semibold">{apt.block}</span></p>
+              <p>
+                Floor: <span className="font-semibold">{apt.floor}</span>
+              </p>
+              <p>
+                Block: <span className="font-semibold">{apt.block}</span>
+              </p>
               <p className="flex items-center gap-2">
                 <FaMoneyBill className="text-green-500" />
                 <span>Rent: ৳{apt.rent}</span>

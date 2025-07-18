@@ -3,14 +3,13 @@ import React, { useEffect } from "react";
 import { FaTag, FaCalendarAlt, FaPercentage, FaCopy } from "react-icons/fa";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import axiosSecure from "../utils/useAxiosSecure";
+import useAxiosSecure from "../utils/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import Loading from "../utils/Loading";
 
-
-
 const Coupons = () => {
+  const axiosSecure = useAxiosSecure();
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
@@ -46,7 +45,8 @@ const Coupons = () => {
             Available Coupons
           </h2>
           <p className="text-gray-700 dark:text-gray-300 text-base sm:text-lg font-inter max-w-2xl mx-auto">
-            Save more with exclusive TowerTrack coupons for rent, services, and amenities.
+            Save more with exclusive TowerTrack coupons for rent, services, and
+            amenities.
           </p>
         </div>
 
