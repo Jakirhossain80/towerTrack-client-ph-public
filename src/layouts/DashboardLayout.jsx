@@ -9,7 +9,7 @@ import { MdApartment } from "react-icons/md";
 import { TbUsersGroup } from "react-icons/tb";
 import { RiCouponLine } from "react-icons/ri";
 import { LuHandshake } from "react-icons/lu";
-import { FaPeopleLine } from "react-icons/fa6";
+import { FaPeopleLine, FaMoneyCheckDollar } from "react-icons/fa6";
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
@@ -82,13 +82,14 @@ const DashboardLayout = () => {
 
   if (role === "member") {
     navLinks
-      .push
-      //   {
-      //   path: "/dashboard/my-residents",
-      //   label: "My Residents",
-      //   icon: <TbUsersGroup />,
-      // }
-      ();
+      .push(
+        {
+        path: "/dashboard/makePayment",
+        label: "Make Payment",
+        icon: <FaMoneyCheckDollar />,
+      }
+    )
+      ;
   }
 
   return (
