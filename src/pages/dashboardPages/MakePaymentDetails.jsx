@@ -36,19 +36,32 @@ const MakePaymentDetails = () => {
 
   return (
     <div
-      className="max-w-3xl mx-auto p-6 bg-white dark:bg-slate-800 rounded-xl shadow-lg mt-6 font-inter"
+      className="max-w-4xl mx-auto px-8 py-10 bg-white dark:bg-slate-800 rounded-xl shadow-lg mt-6 font-inter"
       data-aos="zoom-in"
     >
       <h2 className="text-2xl font-poppins font-semibold text-gray-800 dark:text-gray-200 mb-4">
         Payment Summary
       </h2>
       <div className="space-y-2 mb-4">
-        {Object.entries(state || {}).map(([key, value]) => (
-          <p key={key} className="text-gray-800 dark:text-gray-200">
-            <span className="font-semibold capitalize">{key.replace(/([A-Z])/g, ' $1')}: </span>
-            {value}
-          </p>
-        ))}
+        {Object.entries(state || {}).map(([key, value]) => {
+          if (
+            key === "_id" ||
+            key === "status" ||
+            key === "createdAt" ||
+            key === "updatedAt"
+          ) {
+            return null;
+          }
+
+          return (
+            <p key={key} className="text-gray-800 dark:text-gray-200">
+              <span className="font-semibold capitalize">
+                {key.replace(/([A-Z])/g, " $1")}:{" "}
+              </span>
+              {value}
+            </p>
+          );
+        })}
       </div>
 
       <div className="flex gap-2 mb-4">
@@ -75,7 +88,13 @@ const MakePaymentDetails = () => {
 
       <button
         className="btn bg-lime-500 hover:bg-lime-600 text-white mt-4 transition-all duration-500"
-        onClick={() => Swal.fire("Payment Simulated", "This is where Stripe will be integrated.", "success")}
+        onClick={() =>
+          Swal.fire(
+            "Payment Simulated",
+            "This is where Stripe will be integrated.",
+            "success"
+          )
+        }
       >
         Pay Now
       </button>
