@@ -1,7 +1,7 @@
 // src/components/dashboard/AgreementRequest.jsx
 import { useContext, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axiosSecure from "../../utils/axiosSecure";
+import axiosSecure from "../../utils/useAxiosSecure";
 import { AuthContext } from "../../provider/AuthProvider";
 import Loading from "../../utils/Loading";
 import Swal from "sweetalert2";

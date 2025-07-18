@@ -7,7 +7,7 @@ import { FaMoneyBill } from "react-icons/fa";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Swal from "sweetalert2";
-import axiosSecure from "../../utils/axiosSecure";
+import axiosSecure from "../../utils/useAxiosSecure";
 import Loading from "../../utils/Loading";
 
 const Apartment = () => {

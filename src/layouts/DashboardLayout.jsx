@@ -65,11 +65,7 @@ const DashboardLayout = () => {
         label: "Manage Coupons",
         icon: <RiCouponLine />,
       },
-      {
-        path: "/dashboard/all-agreements",
-        label: "Agreements",
-        icon: <MdApartment />,
-      },
+
       {
         path: "/dashboard/agreementRequest",
         label: "Agreement Request",
@@ -79,11 +75,13 @@ const DashboardLayout = () => {
   }
 
   if (role === "member") {
-    navLinks.push({
-      path: "/dashboard/my-residents",
-      label: "My Residents",
-      icon: <TbUsersGroup />,
-    });
+    navLinks.push(
+    //   {
+    //   path: "/dashboard/my-residents",
+    //   label: "My Residents",
+    //   icon: <TbUsersGroup />,
+    // }
+  );
   }
 
   return (

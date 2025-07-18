@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
-import axiosSecure from "../../utils/axiosSecure";
+import axiosSecure from "../../utils/useAxiosSecure";
 import Swal from "sweetalert2";
 import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import Loading from "../../utils/Loading";

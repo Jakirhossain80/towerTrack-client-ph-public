@@ -3,13 +3,12 @@ import React, { useEffect } from "react";
 import { FaTag, FaCalendarAlt, FaPercentage, FaCopy } from "react-icons/fa";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import axiosSecure from "../utils/axiosSecure";
+import axiosSecure from "../utils/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import Loading from "../utils/Loading";
 
-// ✅ Axios default for cookies
-axiosSecure.defaults.withCredentials = true;
+
 
 const Coupons = () => {
   useEffect(() => {

@@ -2,7 +2,7 @@
 import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../utils/axiosSecure";
+import useAxiosSecure from "../../utils/useAxiosSecure";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
