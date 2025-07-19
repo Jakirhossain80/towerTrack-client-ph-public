@@ -20,6 +20,7 @@ import ManageMembers from "../pages/dashboardPages/ManageMembers";
 import MakePayment from "../pages/dashboardPages/MakePayment";
 import MakePaymentDetails from "../pages/dashboardPages/MakePaymentDetails";
 import PaymentHistory from "../pages/dashboardPages/PaymentHistory";
+import NoticeBoard from "../pages/dashboardPages/NoticeBoard";
 
 export const router = createBrowserRouter([
   {
@@ -94,6 +95,14 @@ export const router = createBrowserRouter([
         element: (
           <MemberRoute>
             <PaymentHistory />
+          </MemberRoute>
+        )
+      },
+      {
+        path: "/dashboard/noticeBoard",
+        element: (
+          <MemberRoute>
+            <NoticeBoard />
           </MemberRoute>
         )
       },

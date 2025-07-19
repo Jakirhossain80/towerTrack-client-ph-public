@@ -10,6 +10,7 @@ import { TbUsersGroup } from "react-icons/tb";
 import { RiCouponLine } from "react-icons/ri";
 import { LuHandshake } from "react-icons/lu";
 import { FaPeopleLine, FaMoneyCheckDollar } from "react-icons/fa6";
+import { LiaClipboardListSolid } from "react-icons/lia";
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
@@ -92,6 +93,11 @@ const DashboardLayout = () => {
          path: "/dashboard/paymentHistory",
         label: "Payment History",
         icon: <FaMoneyCheckDollar />,
+      },
+        {
+         path: "/dashboard/noticeBoard",
+        label: "Notice Board",
+        icon: <LiaClipboardListSolid />,
       },
     )
       ;
