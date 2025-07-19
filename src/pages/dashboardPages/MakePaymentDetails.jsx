@@ -1,20 +1,119 @@
 // src/pages/dashboard/MakePaymentDetails.jsx
+import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { AuthContext } from "../../provider/AuthProvider";
 import useAxiosSecure from "../../utils/useAxiosSecure";
 import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useEffect } from "react";
+import Loading from "../../utils/Loading";
+import { useMutation } from "@tanstack/react-query";
+import {
+  loadStripe
+} from "@stripe/stripe-js";
+import {
+  CardElement,
+  Elements,
+  useStripe,
+  useElements
+} from "@stripe/react-stripe-js";
 
 AOS.init();
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK); // 🔐 Your publishable key
+
+const CheckoutForm = ({ rent, data }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const axiosSecure = useAxiosSecure();
+  const [processing, setProcessing] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn: async (paymentData) => {
+      const res = await axiosSecure.post("/payments", paymentData);
+      return res.data;
+    },
+    onSuccess: () => {
+      Swal.fire("Success", "Payment completed and saved!", "success");
+    },
+    onError: () => {
+      Swal.fire("Error", "Payment recorded failed!", "error");
+    }
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setProcessing(true);
+
+    try {
+      const { data: clientSecret } = await axiosSecure.post("/create-payment-intent", {
+        amount: rent,
+        email: data.userEmail,
+      });
+
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            email: data.userEmail,
+          },
+        },
+      });
+
+      if (result.error) {
+        Swal.fire("Payment Failed", result.error.message, "error");
+      } else if (result.paymentIntent.status === "succeeded") {
+        mutation.mutate({
+          name: data.userName,
+          email: data.userEmail,
+          amount: rent,
+          apartment: data.apartmentNo,
+          floor: data.floorNo,
+          block: data.blockName,
+          month: data.month,
+          transactionId: result.paymentIntent.id,
+          status: "completed",
+          createdAt: new Date(),
+        });
+
+        // ✅ Clear the card input fields
+        const cardElement = elements.getElement(CardElement);
+        if (cardElement) cardElement.clear();
+      }
+    } catch (err) {
+      Swal.fire("Error", err.message, "error");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+      <CardElement className="p-4 border border-gray-300 rounded-md bg-white dark:bg-slate-700" />
+      <button
+        type="submit"
+        disabled={!stripe || processing}
+        className="btn bg-lime-500 hover:bg-lime-600 text-white w-full transition-all duration-500"
+      >
+        {processing ? "Processing..." : `Pay ৳${rent}`}
+      </button>
+    </form>
+  );
+};
 
 const MakePaymentDetails = () => {
   const { state } = useLocation();
+  const { user, loading } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
+
   const [coupon, setCoupon] = useState("");
   const [discountedRent, setDiscountedRent] = useState(state?.rent);
   const [couponApplied, setCouponApplied] = useState(false);
+
+  useEffect(() => {
+    if (state?.rent) setDiscountedRent(state.rent);
+  }, [state]);
 
   const handleApplyCoupon = async () => {
     try {
@@ -34,6 +133,8 @@ const MakePaymentDetails = () => {
     }
   };
 
+  if (loading || !state) return <Loading />;
+
   return (
     <div
       className="max-w-4xl mx-auto px-8 py-10 bg-white dark:bg-slate-800 rounded-xl shadow-lg mt-6 font-inter"
@@ -42,17 +143,10 @@ const MakePaymentDetails = () => {
       <h2 className="text-2xl font-poppins font-semibold text-gray-800 dark:text-gray-200 mb-4">
         Payment Summary
       </h2>
+
       <div className="space-y-2 mb-4">
         {Object.entries(state || {}).map(([key, value]) => {
-          if (
-            key === "_id" ||
-            key === "status" ||
-            key === "createdAt" ||
-            key === "updatedAt"
-          ) {
-            return null;
-          }
-
+          if (["_id", "status", "createdAt", "updatedAt"].includes(key)) return null;
           return (
             <p key={key} className="text-gray-800 dark:text-gray-200">
               <span className="font-semibold capitalize">
@@ -86,18 +180,9 @@ const MakePaymentDetails = () => {
         </p>
       )}
 
-      <button
-        className="btn bg-lime-500 hover:bg-lime-600 text-white mt-4 transition-all duration-500"
-        onClick={() =>
-          Swal.fire(
-            "Payment Simulated",
-            "This is where Stripe will be integrated.",
-            "success"
-          )
-        }
-      >
-        Pay Now
-      </button>
+      <Elements stripe={stripePromise}>
+        <CheckoutForm rent={discountedRent} data={state} />
+      </Elements>
     </div>
   );
 };

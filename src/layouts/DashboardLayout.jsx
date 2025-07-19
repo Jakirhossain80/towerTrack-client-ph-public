@@ -87,7 +87,12 @@ const DashboardLayout = () => {
         path: "/dashboard/makePayment",
         label: "Make Payment",
         icon: <FaMoneyCheckDollar />,
-      }
+      },
+        {
+         path: "/dashboard/paymentHistory",
+        label: "Payment History",
+        icon: <FaMoneyCheckDollar />,
+      },
     )
       ;
   }
