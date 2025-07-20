@@ -19,7 +19,7 @@ const Coupons = () => {
     queryKey: ["public-coupons"],
     queryFn: async () => {
       // ✅ Updated to call public endpoint for Coupons component
-      const res = await axiosSecure.get("/public/coupons");
+      const res = await axiosSecure.get("/coupons");
       return res.data;
     },
   });
