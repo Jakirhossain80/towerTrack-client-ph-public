@@ -1,7 +1,4 @@
-Sure! Here's a complete and professional `README.md` file for your **TowerTrack** MERN stack project:
-
-````markdown
-# 🏢 TowerTrack
+# 🏢 Project Name: TowerTrack
 
 **TowerTrack** is a full-featured MERN stack web application built for **residential building management**. It empowers Admins to manage apartments, Members to handle rent payments and maintenance requests, and provides a smooth experience for all users with role-based dashboards, rent tracking, and real-time notices.
 
@@ -74,7 +71,7 @@ firebase
 axios
 react-router-dom
 react-icons
-sweetalert2
+sweetAlert2
 jsonwebtoken
 cors
 express
@@ -100,11 +97,6 @@ towertrack/
 │   ├── public/
 │   └── index.html
 ├── server/ (Express Backend)
-│   ├── routes/
-│   ├── controllers/
-│   ├── middlewares/
-│   ├── utils/
-│   ├── index.js
 │   ├── .env
 └── README.md
 ```
@@ -126,21 +118,6 @@ VITE_FIREBASE_APP_ID=your_app_id
 VITE_STRIPE_PK=your_stripe_publishable_key
 ```
 
-### 🔐 `.env.example` (Backend)
-
-```env
-PORT=3000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/towertrack
-JWT_SECRET=your_jwt_secret_key
-FIREBASE_TYPE=service_account
-FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_PRIVATE_KEY_ID=your_private_key_id
-FIREBASE_PRIVATE_KEY=your_private_key
-FIREBASE_CLIENT_EMAIL=your_client_email
-FIREBASE_CLIENT_ID=your_client_id
-```
-
----
 
 ## 📡 API Overview (High-Level)
 
@@ -212,14 +189,5 @@ Feel free to use, modify, and distribute this project with credit.
 
 **Author:** Jakir Hossain
 📧 Email: [jakir.devbd@gmail.com](mailto:jakir.devbd@gmail.com)
-🌐 Portfolio: [jakirhossain.dev](https://jakirhossain.dev)
-🐦 Twitter: [@jakirdevbd](https://twitter.com/jakirdevbd)
 
----
 
-> Built with ❤️ using the MERN stack for modern residential management.
-
-```
-
-Let me know if you'd like this saved to a file or deployed as part of your project!
-```

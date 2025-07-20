@@ -14,7 +14,7 @@ import app from "../firebase.config";
 
 // 🔐 Axios instance with credentials for HTTP-only cookie support
 const axiosSecure = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
+  baseURL: import.meta.env.VITE_API_URL || "https://tower-track-server.vercel.app",
   withCredentials: true,
 });
 
