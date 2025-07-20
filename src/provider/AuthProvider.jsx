@@ -15,7 +15,7 @@ import app from "../firebase.config";
 
 // 🔐 Axios instance with credentials for HTTP-only cookie support
 const axiosSecure = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://tower-track-server.vercel.app",
+ baseURL: "https://tower-track-server.vercel.app",
   withCredentials: true,
 });
 
@@ -40,11 +40,8 @@ const AuthProvider = ({ children }) => {
           const idToken = await currentUser.getIdToken(true);
 
           // ✅ Exchange Firebase token for JWT (set HTTP-only cookie)
-          await axios.post(
-            `${import.meta.env.VITE_API_URL}/jwt`,
-            { token: idToken },
-            { withCredentials: true }
-          );
+          await axiosSecure.post("/jwt", { token: idToken });
+
 
           // ✅ Check if user exists in DB
           const res = await axiosSecure.get(`/users/${currentUser.email}`).catch(() => null);

@@ -10,7 +10,7 @@ import "aos/dist/aos.css";
 
 // Secure Axios instance
 const axiosSecure = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://tower-track-server.vercel.app",
+ baseURL: "https://tower-track-server.vercel.app",
   withCredentials: true,
 });
 
