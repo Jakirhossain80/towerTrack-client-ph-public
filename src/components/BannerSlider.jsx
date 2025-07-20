@@ -15,7 +15,7 @@ const slides = [
     heading: "Seamless Apartment Management",
     text: "Manage residents, track payments, and simplify building operations — all in one place.",
     button: "Explore Features",
-    buttonLink: "/dashboard",
+    buttonLink: "/apartment",
   },
   {
     image: "https://i.ibb.co/yc31Pg4B/bannertwo.webp",

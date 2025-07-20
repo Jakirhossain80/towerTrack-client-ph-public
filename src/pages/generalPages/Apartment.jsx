@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { MdApartment } from "react-icons/md";
 import { FaMoneyBill } from "react-icons/fa";
+import { LiaWarehouseSolid } from "react-icons/lia"; 
+import { CiSquareAlert } from "react-icons/ci";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Swal from "sweetalert2";
@@ -172,18 +174,43 @@ const Apartment = () => {
             <div className="p-6 space-y-2 text-gray-800 dark:text-gray-200 font-inter">
               <div className="flex items-center gap-2">
                 <MdApartment className="text-xl text-emerald-500" />
-                <span className="text-lg font-medium">{apt.apartmentNo}</span>
+                <span className="text-lg font-medium">Apartment No: {apt.apartmentNo}</span>
               </div>
-              <p>
-                Floor: <span className="font-semibold">{apt.floor}</span>
+              
+              
+             
+              
+              
+             
+              
+              <p className="flex items-center gap-2">
+                <LiaWarehouseSolid className="text-green-500" />
+                <span>Floor: {apt.floor}</span>
               </p>
-              <p>
-                Block: <span className="font-semibold">{apt.block}</span>
+              
+              
+              
+              
+              
+              
+              <p className="flex items-center gap-2">
+                <CiSquareAlert className="text-green-500" />
+                <span>Block: {apt.block}</span>
               </p>
+
+
+
+
+
+              
               <p className="flex items-center gap-2">
                 <FaMoneyBill className="text-green-500" />
                 <span>Rent: ৳{apt.rent}</span>
               </p>
+              
+              
+              
+              
               <button
                 onClick={() => handleAgreement(apt)}
                 disabled={hasApplied}

@@ -1,4 +1,3 @@
-// Updated DashboardLayout.jsx
 import React, { useContext, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
@@ -11,6 +10,7 @@ import { RiCouponLine } from "react-icons/ri";
 import { LuHandshake } from "react-icons/lu";
 import { FaPeopleLine, FaMoneyCheckDollar } from "react-icons/fa6";
 import { LiaClipboardListSolid } from "react-icons/lia";
+
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
@@ -36,78 +36,38 @@ const DashboardLayout = () => {
 
   if (loading || isLoading) return <Loading />;
 
-  // ✅ Allow both "user" and "member" roles
   const navLinks = [];
 
   if (role === "user" || role === "member") {
     navLinks.push(
       { path: "/dashboard/my-profile", label: "My Profile", icon: <FiUser /> },
-      {
-        path: "/dashboard/announcements",
-        label: "Announcements",
-        icon: <TfiAnnouncement />,
-      }
+      { path: "/dashboard/announcements", label: "Announcements", icon: <TfiAnnouncement /> }
     );
   }
 
   if (role === "admin") {
     navLinks.push(
-      {
-        path: "/dashboard/adminProfile",
-        label: "Admin Profile",
-        icon: <FaUsersCog />,
-      },
-      {
-        path: "/dashboard/manageMembers",
-        label: "Manage Members",
-        icon: <FaPeopleLine />,
-      },
-      {
-        path: "/dashboard/makeAnnouncement",
-        label: "Make Announcement",
-        icon: <TfiAnnouncement />,
-      },
-
-      {
-        path: "/dashboard/agreementRequest",
-        label: "Agreement Request",
-        icon: <LuHandshake />,
-      },
-      {
-        path: "/dashboard/manageCoupons",
-        label: "Manage Coupons",
-        icon: <RiCouponLine />,
-      }
+      { path: "/dashboard/adminProfile", label: "Admin Profile", icon: <FaUsersCog /> },
+      { path: "/dashboard/manageMembers", label: "Manage Members", icon: <FaPeopleLine /> },
+      { path: "/dashboard/makeAnnouncement", label: "Make Announcement", icon: <TfiAnnouncement /> },
+      { path: "/dashboard/agreementRequest", label: "Agreement Request", icon: <LuHandshake /> },
+      { path: "/dashboard/manageCoupons", label: "Manage Coupons", icon: <RiCouponLine /> }
     );
   }
 
   if (role === "member") {
-    navLinks
-      .push(
-        {
-        path: "/dashboard/makePayment",
-        label: "Make Payment",
-        icon: <FaMoneyCheckDollar />,
-      },
-        {
-         path: "/dashboard/paymentHistory",
-        label: "Payment History",
-        icon: <FaMoneyCheckDollar />,
-      },
-        {
-         path: "/dashboard/noticeBoard",
-        label: "Notice Board",
-        icon: <LiaClipboardListSolid />,
-      },
-    )
-      ;
+    navLinks.push(
+      { path: "/dashboard/makePayment", label: "Make Payment", icon: <FaMoneyCheckDollar /> },
+      { path: "/dashboard/paymentHistory", label: "Payment History", icon: <FaMoneyCheckDollar /> },
+      { path: "/dashboard/noticeBoard", label: "Notice Board", icon: <LiaClipboardListSolid /> }
+    );
   }
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900 transition-all duration-500">
       {/* Sidebar */}
       <div
-        className={`fixed z-30 inset-y-0 left-0 w-64 transform bg-white dark:bg-slate-100 border-r dark:border-gray-700 lg:static lg:translate-x-0 shadow-lg transition-all duration-500
+        className={`fixed z-30 inset-y-0 left-0 w-64 transform bg-white dark:bg-slate-800 border-r dark:border-gray-700 lg:static lg:translate-x-0 shadow-lg transition-all duration-500
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <Link
@@ -115,12 +75,12 @@ const DashboardLayout = () => {
           className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 transition-all duration-500"
         >
           <img src={logo} alt="TowerTrack Logo" className="h-10" />
-          <span className="font-semibold text-gray-800 dark:text-gray-800 transition-all duration-500">
+          <span className="font-semibold text-gray-800 dark:text-gray-100 transition-all duration-500">
             Dashboard
           </span>
           <button
             onClick={toggleSidebar}
-            className="lg:hidden text-gray-800 dark:text-gray-800 transition-all duration-500"
+            className="lg:hidden text-gray-800 dark:text-gray-100 transition-all duration-500"
           >
             <FiX size={20} />
           </button>
@@ -133,16 +93,14 @@ const DashboardLayout = () => {
         >
           <div className="text-center transition-all duration-500">
             <img
-              src={
-                user?.photoURL || "https://i.ibb.co/0jqHpnp/default-user.png"
-              }
+              src={user?.photoURL || "https://i.ibb.co/0jqHpnp/default-user.png"}
               alt="User"
               className="mx-auto h-16 w-16 rounded-full object-cover border-2 border-lime-500 transition-all duration-500"
             />
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-800 mt-2 transition-all duration-500">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mt-2 transition-all duration-500">
               {user?.displayName || "User"}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-600 transition-all duration-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400 transition-all duration-500">
               {user?.email}
             </p>
             <span className="text-xs text-lime-500 transition-all duration-500">
@@ -163,7 +121,7 @@ const DashboardLayout = () => {
                 ${
                   isActive
                     ? "bg-lime-600 text-white"
-                    : "text-gray-700 hover:bg-lime-100 dark:text-gray-600 dark:hover:bg-gray-200"
+                    : "text-gray-700 hover:bg-lime-100 dark:text-gray-300 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -189,7 +147,7 @@ const DashboardLayout = () => {
         <div className="lg:hidden p-4">
           <button
             onClick={toggleSidebar}
-            className="text-gray-800 dark:text-gray-200 focus:outline-none transition-all duration-500"
+            className="text-gray-800 dark:text-gray-100 focus:outline-none transition-all duration-500"
           >
             <FiMenu size={24} />
           </button>
