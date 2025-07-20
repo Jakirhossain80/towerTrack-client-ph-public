@@ -15,7 +15,7 @@ import app from "../firebase.config";
 
 // 🔐 Axios instance with credentials for HTTP-only cookie support
 const axiosSecure = axios.create({
- baseURL: "https://tower-track-server.vercel.app",
+  baseURL: "https://tower-track-server.vercel.app",
   withCredentials: true,
 });
 
@@ -32,21 +32,16 @@ const AuthProvider = ({ children }) => {
   // 🔄 Firebase auth state listener with JWT sync and user DB creation
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-
-      
-
+      setLoading(true);
       try {
+        setUser(currentUser);
+
         if (currentUser) {
           const idToken = await currentUser.getIdToken(true);
-
           console.log("🔥 Firebase ID Token:", idToken);
-
 
           // ✅ Exchange Firebase token for JWT (set HTTP-only cookie)
           await axiosSecure.post("/jwt", { token: idToken });
-
 
           // ✅ Check if user exists in DB
           const res = await axiosSecure.get(`/users/${currentUser.email}`).catch(() => null);
@@ -61,10 +56,12 @@ const AuthProvider = ({ children }) => {
           }
         } else {
           // ✅ Clear JWT on logout
-          await axios.post(`${import.meta.env.VITE_API_URL}/logout`, {}, { withCredentials: true });
+          await axiosSecure.post("/logout");
         }
       } catch (err) {
         console.error("❌ JWT or user handling error:", err);
+      } finally {
+        setLoading(false);
       }
     });
 
