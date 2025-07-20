@@ -1,4 +1,4 @@
-// src/components/Coupons.jsx
+// ✅ Fully Updated Coupons.jsx
 import React, { useEffect } from "react";
 import { FaTag, FaCalendarAlt, FaPercentage, FaCopy } from "react-icons/fa";
 import AOS from "aos";
@@ -10,20 +10,20 @@ import Loading from "../utils/Loading";
 
 const Coupons = () => {
   const axiosSecure = useAxiosSecure();
+
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  // ✅ Fetch coupons from MongoDB Atlas
   const { data: coupons = [], isLoading } = useQuery({
-    queryKey: ["coupons"],
+    queryKey: ["public-coupons"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/coupons");
+      // ✅ Updated to call public endpoint for Coupons component
+      const res = await axiosSecure.get("/public/coupons");
       return res.data;
     },
   });
 
-  // ✅ Copy coupon code to clipboard
   const handleCopy = (code) => {
     navigator.clipboard.writeText(code);
     Swal.fire({
@@ -45,8 +45,7 @@ const Coupons = () => {
             Available Coupons
           </h2>
           <p className="text-gray-700 dark:text-gray-300 text-base sm:text-lg font-inter max-w-2xl mx-auto">
-            Save more with exclusive TowerTrack coupons for rent, services, and
-            amenities.
+            Save more with exclusive TowerTrack coupons for rent, services, and amenities.
           </p>
         </div>
 
@@ -81,7 +80,6 @@ const Coupons = () => {
                 </div>
               </div>
 
-              {/* 📋 Copy button */}
               <button
                 onClick={() => handleCopy(coupon?.code)}
                 className="mt-6 flex items-center justify-center gap-2 bg-lime-500 hover:bg-lime-600 text-white text-sm font-medium py-2 px-4 rounded-md transition-all duration-300 cursor-pointer"
