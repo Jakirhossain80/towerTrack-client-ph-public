@@ -10,14 +10,7 @@ import {
   GoogleAuthProvider,
   updateProfile,
 } from "firebase/auth";
-import axios from "axios";
 import app from "../firebase.config";
-
-// 🔐 Axios instance with credentials for HTTP-only cookie support
-const axiosSecure = axios.create({
-  baseURL: "https://tower-track-server.vercel.app",
-  withCredentials: true,
-});
 
 // Create context
 export const AuthContext = createContext();
@@ -29,49 +22,12 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Firebase auth state listener with JWT sync and user DB creation
+  // 🔄 Firebase auth state listener (no JWT logic)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setLoading(true);
-      try {
-        setUser(currentUser);
-
-        if (currentUser) {
-          const idToken = await currentUser.getIdToken(true);
-
-          // ✅ Exchange Firebase token for JWT (set HTTP-only cookie)
-          try {
-            await axiosSecure.post("/jwt", { token: idToken });
-          } catch (err) {
-            console.error("❌ JWT fetch error:", err);
-            return;
-          }
-
-          // ✅ Check if user exists in DB
-          try {
-            const res = await axiosSecure.get(`/users/${currentUser.email}`);
-            if (!res?.data?.exists) {
-              const userData = {
-                email: currentUser.email,
-                name: currentUser.displayName || "Unnamed",
-                role: "user",
-              };
-              await axiosSecure.post("/users", userData);
-            }
-          } catch (err) {
-            console.error("❌ User check/creation error:", err);
-          }
-
-        } else {
-          // ✅ Clear JWT on logout
-          await axiosSecure.post("/logout");
-        }
-
-      } catch (err) {
-        console.error("❌ JWT or user handling error:", err);
-      } finally {
-        setLoading(false);
-      }
+      setUser(currentUser);
+      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -97,7 +53,6 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      await axiosSecure.post("/logout");
       await signOut(auth);
       setUser(null);
     } catch (error) {

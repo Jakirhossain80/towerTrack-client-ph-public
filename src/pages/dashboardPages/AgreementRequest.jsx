@@ -1,7 +1,7 @@
 // src/components/dashboard/AgreementRequest.jsx
 import { useContext, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import useAxiosSecure from "../../utils/useAxiosSecure";
+import axios from "axios";
 import { AuthContext } from "../../provider/AuthProvider";
 import Loading from "../../utils/Loading";
 import Swal from "sweetalert2";
@@ -9,7 +9,6 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 const AgreementRequest = () => {
-  const axiosSecure = useAxiosSecure();
   const { user, loading } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
@@ -22,7 +21,9 @@ const AgreementRequest = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
@@ -34,7 +35,9 @@ const AgreementRequest = () => {
   } = useQuery({
     queryKey: ["pendingAgreements"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/agreements?status=pending");
+      const res = await axios.get(
+        "https://tower-track-server.vercel.app/agreements?status=pending"
+      );
       return res.data;
     },
   });
@@ -43,14 +46,20 @@ const AgreementRequest = () => {
   const handleAction = async (id, email, action) => {
     try {
       // 1. Update agreement status to "checked"
-      await axiosSecure.patch(`/agreements/${id}/status`, { status: "checked" });
+      await axios.patch(
+        `https://tower-track-server.vercel.app/agreements/${id}/status`,
+        { status: "checked" }
+      );
 
       // 2. If accepted, update user role to "member"
       if (action === "accept") {
-        await axiosSecure.patch("/users/role", {
-          email,
-          role: "member",
-        });
+        await axios.patch(
+          "https://tower-track-server.vercel.app/users/role",
+          {
+            email,
+            role: "member",
+          }
+        );
       }
 
       // 3. Refetch data

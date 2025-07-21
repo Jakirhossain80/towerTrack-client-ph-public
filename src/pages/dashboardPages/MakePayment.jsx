@@ -3,8 +3,8 @@ import { useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
-import useAxiosSecure from "../../utils/useAxiosSecure";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -13,15 +13,14 @@ AOS.init();
 
 const MakePayment = () => {
   const { user, loading } = useContext(AuthContext);
-  const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
-  // ✅ Fetch user role (for future use if needed)
+  // ✅ Fetch user role
   const { data: roleData, isLoading: loadingRole } = useQuery({
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(`https://tower-track-server.vercel.app/users/role/${user.email}`);
       return res.data;
     },
   });
@@ -33,7 +32,7 @@ const MakePayment = () => {
   } = useQuery({
     queryKey: ["agreement", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/agreements/${user?.email}`);
+      const res = await axios.get(`https://tower-track-server.vercel.app/agreements/${user?.email}`);
       return res.data;
     },
     enabled: !!user?.email,
@@ -141,18 +140,8 @@ const MakePayment = () => {
           >
             <option value="">Select Month</option>
             {[
-              "January",
-              "February",
-              "March",
-              "April",
-              "May",
-              "June",
-              "July",
-              "August",
-              "September",
-              "October",
-              "November",
-              "December",
+              "January", "February", "March", "April", "May", "June",
+              "July", "August", "September", "October", "November", "December",
             ].map((month) => (
               <option key={month} value={month}>
                 {month}

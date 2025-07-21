@@ -3,10 +3,10 @@ import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
-import useAxiosSecure from "../../utils/useAxiosSecure";
 import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import axios from "axios";
 import Loading from "../../utils/Loading";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -17,24 +17,23 @@ import {
 } from "@stripe/react-stripe-js";
 
 AOS.init();
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK); // 🔐 Your publishable key
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
 
 const CheckoutForm = ({ rent, data }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const axiosSecure = useAxiosSecure();
   const [processing, setProcessing] = useState(false);
 
   const mutation = useMutation({
     mutationFn: async (paymentData) => {
-      const res = await axiosSecure.post("/payments", paymentData);
+      const res = await axios.post("https://tower-track-server.vercel.app/payments", paymentData);
       return res.data;
     },
     onSuccess: () => {
       Swal.fire("Success", "Payment completed and saved!", "success");
     },
     onError: () => {
-      Swal.fire("Error", "Payment recorded failed!", "error");
+      Swal.fire("Error", "Payment record failed!", "error");
     },
   });
 
@@ -45,7 +44,7 @@ const CheckoutForm = ({ rent, data }) => {
     setProcessing(true);
 
     try {
-      const { data: clientSecret } = await axiosSecure.post("/create-payment-intent", {
+      const { data: clientSecret } = await axios.post("https://tower-track-server.vercel.app/create-payment-intent", {
         amount: rent,
         email: data.userEmail,
       });
@@ -102,18 +101,15 @@ const CheckoutForm = ({ rent, data }) => {
 const MakePaymentDetails = () => {
   const { state } = useLocation();
   const { user, loading } = useContext(AuthContext);
-  const axiosSecure = useAxiosSecure();
-
   const [coupon, setCoupon] = useState("");
   const [discountedRent, setDiscountedRent] = useState(state?.rent);
   const [couponApplied, setCouponApplied] = useState(false);
 
-  // ✅ Get user role from secure API
   const { data: roleData, isLoading: isRoleLoading } = useQuery({
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(`https://tower-track-server.vercel.app/users/role/${user.email}`);
       return res.data;
     },
   });
@@ -124,7 +120,9 @@ const MakePaymentDetails = () => {
 
   const handleApplyCoupon = async () => {
     try {
-      const res = await axiosSecure.post("/validate-coupon", { code: coupon });
+      const res = await axios.post("https://tower-track-server.vercel.app/validate-coupon", {
+        code: coupon,
+      });
       const { valid, discountPercentage } = res.data;
       if (valid) {
         const discounted = state.rent - (state.rent * discountPercentage) / 100;

@@ -1,15 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
-import useAxiosSecure from "../../utils/useAxiosSecure";
 import Swal from "sweetalert2";
 import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import axios from "axios";
 
 const ManageCoupons = () => {
-  const axiosSecure = useAxiosSecure();
   const { user, loading } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
@@ -20,7 +19,6 @@ const ManageCoupons = () => {
     AOS.init({ duration: 800 });
   }, []);
 
-  // ✅ Securely fetch user role
   const {
     data: roleData,
     isLoading: roleLoading,
@@ -28,7 +26,7 @@ const ManageCoupons = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(`https://tower-track-server.vercel.app/users/role/${user.email}`);
       return res.data;
     },
   });
@@ -38,7 +36,7 @@ const ManageCoupons = () => {
   const { data: coupons = [], isLoading } = useQuery({
     queryKey: ["coupons"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/coupons");
+      const res = await axios.get("https://tower-track-server.vercel.app/coupons");
       return res.data;
     },
   });
@@ -46,8 +44,10 @@ const ManageCoupons = () => {
   const mutation = useMutation({
     mutationFn: async (coupon) => {
       const method = editData ? "patch" : "post";
-      const url = editData ? `/coupons/${editData._id}` : "/coupons";
-      return axiosSecure[method](url, coupon);
+      const url = editData
+        ? `https://tower-track-server.vercel.app/coupons/${editData._id}`
+        : "https://tower-track-server.vercel.app/coupons";
+      return axios[method](url, coupon);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["coupons"]);
@@ -61,7 +61,8 @@ const ManageCoupons = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id) => await axiosSecure.delete(`/coupons/${id}`),
+    mutationFn: async (id) =>
+      await axios.delete(`https://tower-track-server.vercel.app/coupons/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries(["coupons"]);
       Swal.fire("Deleted!", "Coupon has been deleted.", "success");
@@ -167,7 +168,6 @@ const ManageCoupons = () => {
         </table>
       </div>
 
-      {/* ➕ Add/Edit Modal */}
       {modalOpen && (
         <div className="min-h-screen fixed inset-0 bg-transparent backdrop-blur-sm bg-opacity-50 flex justify-center items-center z-50">
           <form

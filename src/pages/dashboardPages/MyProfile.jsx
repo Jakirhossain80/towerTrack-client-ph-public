@@ -1,8 +1,7 @@
-// src/pages/dashboard/MyProfile.jsx
 import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../utils/useAxiosSecure";
+import axios from "axios";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -16,13 +15,11 @@ import {
 
 const MyProfile = () => {
   const { user, loading } = useContext(AuthContext);
-  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  // ✅ Fetch user role (merged)
   const {
     data: roleData,
     isLoading: roleLoading,
@@ -30,12 +27,13 @@ const MyProfile = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
 
-  // 📦 Fetch agreement data
   const {
     data: agreement,
     isLoading,
@@ -43,7 +41,9 @@ const MyProfile = () => {
     queryKey: ["agreement", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/agreements/member/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/agreements/member/${user.email}`
+      );
       return res.data;
     },
     retry: false,

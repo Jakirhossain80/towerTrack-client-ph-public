@@ -2,7 +2,7 @@
 import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../utils/useAxiosSecure";
+import axios from "axios";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -17,59 +17,72 @@ import {
 
 const AdminProfile = () => {
   const { user, loading } = useContext(AuthContext);
-  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  // ✅ Get user role (merged snippet)
+  // ✅ Get user role — JWT logic removed
   const { data: roleData, isLoading: loadingRole } = useQuery({
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
 
-  // Fetch apartments
+  // ✅ Fetch apartments — plain axios
   const {
     data: apartments = [],
     isLoading: loadingApartments,
   } = useQuery({
     queryKey: ["apartments"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/apartments");
+      const res = await axios.get(
+        "https://tower-track-server.vercel.app/apartments"
+      );
       return res.data;
     },
   });
 
-  // Fetch agreements
+  // ✅ Fetch agreements — plain axios
   const {
     data: agreements = [],
     isLoading: loadingAgreements,
   } = useQuery({
     queryKey: ["agreements"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/agreements");
+      const res = await axios.get(
+        "https://tower-track-server.vercel.app/agreements"
+      );
       return res.data;
     },
   });
 
-  // Fetch all users
+  // ✅ Fetch users — plain axios
   const {
     data: users = [],
     isLoading: loadingUsers,
   } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/users");
+      const res = await axios.get(
+        "https://tower-track-server.vercel.app/users"
+      );
       return res.data;
     },
   });
 
-  if (loading || loadingRole || loadingApartments || loadingAgreements || loadingUsers) {
+  if (
+    loading ||
+    loadingRole ||
+    loadingApartments ||
+    loadingAgreements ||
+    loadingUsers
+  ) {
     return <Loading />;
   }
 

@@ -1,36 +1,22 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 import { FaTag, FaCalendarAlt, FaPercentage, FaCopy } from "react-icons/fa";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import useAxiosSecure from "../utils/useAxiosSecure";
+import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import Loading from "../utils/Loading";
-import { AuthContext } from "../provider/AuthProvider"; // ✅ Added
 
 const Coupons = () => {
-  const axiosSecure = useAxiosSecure();
-  const { user, loading } = useContext(AuthContext); // ✅ Added
-
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  // ✅ Role fetch (conditionally triggered after auth loads)
-  const { data: roleData } = useQuery({
-    queryKey: ["userRole", user?.email],
-    enabled: !loading && !!user?.email,
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
-      return res.data;
-    },
-  });
-
-  // ✅ Coupon fetch (public)
+  // ✅ Public coupon fetch (no JWT)
   const { data: coupons = [], isLoading } = useQuery({
     queryKey: ["public-coupons"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/public/coupons");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/public/coupons`);
       return res.data;
     },
   });

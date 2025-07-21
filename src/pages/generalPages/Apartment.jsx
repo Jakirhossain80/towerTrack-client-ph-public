@@ -9,12 +9,10 @@ import { CiSquareAlert } from "react-icons/ci";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Swal from "sweetalert2";
-import useAxiosSecure from "../../utils/useAxiosSecure";
-
+import axios from "axios";
 import Loading from "../../utils/Loading";
 
 const Apartment = () => {
-  const axiosSecure = useAxiosSecure();
   const { user, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -29,7 +27,6 @@ const Apartment = () => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  // ✅ Fetch user role
   const {
     data: roleData,
     isLoading: roleLoading,
@@ -37,7 +34,9 @@ const Apartment = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
@@ -49,15 +48,15 @@ const Apartment = () => {
   } = useQuery({
     queryKey: ["apartments"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/apartments");
+      const res = await axios.get(`https://tower-track-server.vercel.app/apartments`);
       return res.data;
     },
   });
 
   useEffect(() => {
     if (user?.email) {
-      axiosSecure
-        .get(`/agreements?email=${user.email}`)
+      axios
+        .get(`https://tower-track-server.vercel.app/agreements?email=${user.email}`)
         .then((res) => {
           if (res.data?.hasAgreement) setHasApplied(true);
         })
@@ -67,7 +66,7 @@ const Apartment = () => {
 
   const mutation = useMutation({
     mutationFn: async (data) => {
-      const res = await axiosSecure.post("/agreements", data);
+      const res = await axios.post(`https://tower-track-server.vercel.app/agreements`, data);
       return res.data;
     },
     onSuccess: () => {

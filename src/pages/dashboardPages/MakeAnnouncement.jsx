@@ -8,12 +8,6 @@ import { MdAnnouncement } from "react-icons/md";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-// Secure Axios instance
-const axiosSecure = axios.create({
-  baseURL: "https://tower-track-server.vercel.app",
-  withCredentials: true,
-});
-
 const MakeAnnouncement = () => {
   const { user, loading } = useContext(AuthContext);
 
@@ -22,7 +16,9 @@ const MakeAnnouncement = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
@@ -40,7 +36,7 @@ const MakeAnnouncement = () => {
 
   const mutation = useMutation({
     mutationFn: async (formData) => {
-      const res = await axiosSecure.post("/announcements", formData);
+      const res = await axios.post("https://tower-track-server.vercel.app/announcements", formData);
       return res.data;
     },
     onSuccess: () => {

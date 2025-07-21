@@ -4,13 +4,12 @@ import { AuthContext } from "../../provider/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { FaTrashAlt, FaUsers } from "react-icons/fa";
-import useAxiosSecure from "../../utils/useAxiosSecure"; // 🔐 Secure Axios instance
-import Loading from "../../utils/Loading"; // ⏳ Reusable loading spinner
+import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import axios from "axios";
 
 const ManageMembers = () => {
-  const axiosSecure = useAxiosSecure();
   const { user, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -19,14 +18,12 @@ const ManageMembers = () => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  // 🔐 Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) {
       navigate("/login");
     }
   }, [loading, user, navigate]);
 
-  // ✅ Fetch user role securely
   const {
     data: roleData,
     isLoading: roleLoading,
@@ -34,14 +31,15 @@ const ManageMembers = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
 
   const role = roleData?.role;
 
-  // 📦 Fetch all members
   const {
     data: members = [],
     isLoading,
@@ -49,17 +47,17 @@ const ManageMembers = () => {
   } = useQuery({
     queryKey: ["members"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/users");
+      const res = await axios.get("https://tower-track-server.vercel.app/users");
       return res.data?.filter((u) => u?.role === "member");
     },
   });
 
-  // 🔁 Mutation to remove member (make them 'user')
   const mutation = useMutation({
     mutationFn: async (email) => {
-      const res = await axiosSecure.patch(`/users/${email}`, {
-        role: "user",
-      });
+      const res = await axios.patch(
+        `https://tower-track-server.vercel.app/users/${email}`,
+        { role: "user" }
+      );
       return res.data;
     },
     onSuccess: () => {
@@ -71,15 +69,14 @@ const ManageMembers = () => {
     },
   });
 
-  // 🔘 Remove handler with confirmation
   const handleRemove = (email) => {
     Swal.fire({
       title: "Are you sure?",
       text: "They will lose access to the member dashboard.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#84cc16", // lime-500
-      cancelButtonColor: "#ef4444", // rose-500
+      confirmButtonColor: "#84cc16",
+      cancelButtonColor: "#ef4444",
       confirmButtonText: "Yes, remove",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -89,7 +86,8 @@ const ManageMembers = () => {
   };
 
   if (loading || isLoading || roleLoading) return <Loading />;
-  if (isError) return <p className="text-center text-rose-500">Failed to load members.</p>;
+  if (isError)
+    return <p className="text-center text-rose-500">Failed to load members.</p>;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 transition-all duration-500">

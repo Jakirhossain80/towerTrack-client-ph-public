@@ -2,7 +2,7 @@
 import { useContext, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
-import useAxiosSecure from "../../utils/useAxiosSecure";
+import axios from "axios";
 import Loading from "../../utils/Loading";
 import Swal from "sweetalert2";
 import { FaExclamationTriangle } from "react-icons/fa";
@@ -13,9 +13,8 @@ AOS.init();
 
 const NoticeBoard = () => {
   const { user, loading } = useContext(AuthContext);
-  const axiosSecure = useAxiosSecure();
 
-  // ✅ Fetch user role (merged from provided snippet)
+  // ✅ Fetch user role
   const {
     data: roleData,
     isLoading: roleLoading,
@@ -23,7 +22,9 @@ const NoticeBoard = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
@@ -37,7 +38,9 @@ const NoticeBoard = () => {
     queryKey: ["userNotices", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/notices/user/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/notices/user/${user.email}`
+      );
       return res.data;
     },
   });

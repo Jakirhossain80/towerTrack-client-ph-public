@@ -8,7 +8,6 @@ import { showSuccessAlert, showErrorAlert } from "../../utils/SweetAlert";
 import LottieAnimation from "../../utils/LottieAnimation";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import axios from "axios";
 
 const Login = () => {
   const { signIn, googleLogin } = useContext(AuthContext);
@@ -24,27 +23,6 @@ const Login = () => {
     AOS.init({ duration: 1000, once: true });
   }, []);
 
-  // ✅ Get JWT token from backend and set cookie
-  const fetchJwt = async (user) => {
-    try {
-      const idToken = await user.getIdToken(); // Firebase ID token
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/jwt`,
-        { token: idToken },
-        { withCredentials: true }
-      );
-    } catch (err) {
-      console.error("❌ JWT fetch error:", err);
-    }
-  };
-
-  // ✅ Reusable handler for JWT + navigation
-  const handleJwtAndNavigate = async (user) => {
-    await fetchJwt(user);
-    await new Promise((res) => setTimeout(res, 200));
-    navigate(location.state || "/");
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -55,7 +33,7 @@ const Login = () => {
     setLoading(true);
     try {
       const result = await signIn(email, password);
-      await handleJwtAndNavigate(result.user);
+      navigate(location.state || "/");
       showSuccessAlert("Welcome back to TowerTrack!");
     } catch (err) {
       showErrorAlert("Login failed. Please check your credentials and try again.");
@@ -68,8 +46,7 @@ const Login = () => {
     setLoading(true);
     try {
       const result = await googleLogin();
-      await handleJwtAndNavigate(result.user);
-       await new Promise((res) => setTimeout(res, 200));
+      navigate(location.state || "/");
       showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
 
       try {

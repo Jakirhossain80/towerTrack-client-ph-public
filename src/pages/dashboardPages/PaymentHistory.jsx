@@ -2,7 +2,7 @@
 import { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
-import useAxiosSecure from "../../utils/useAxiosSecure";
+import axios from "axios";
 import Loading from "../../utils/Loading";
 import Swal from "sweetalert2";
 import AOS from "aos";
@@ -13,9 +13,8 @@ AOS.init();
 
 const PaymentHistory = () => {
   const { user, loading } = useContext(AuthContext);
-  const axiosSecure = useAxiosSecure();
 
-  // ✅ Fetch user role (merged snippet)
+  // ✅ Fetch user role
   const {
     data: roleData,
     isLoading: roleLoading,
@@ -23,7 +22,9 @@ const PaymentHistory = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
@@ -38,7 +39,9 @@ const PaymentHistory = () => {
     enabled: !!user?.email,
     queryFn: async () => {
       try {
-        const res = await axiosSecure.get(`/payments/user/${user.email}`);
+        const res = await axios.get(
+          `https://tower-track-server.vercel.app/payments/user/${user.email}`
+        );
         return res.data;
       } catch (error) {
         Swal.fire("Error", "Failed to fetch payment history.", "error");

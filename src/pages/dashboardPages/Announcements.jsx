@@ -2,14 +2,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
-import useAxiosSecure from "../../utils/useAxiosSecure";
+import axios from "axios";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { FaBullhorn } from "react-icons/fa";
 
 const Announcements = () => {
-  const axiosSecure = useAxiosSecure();
   const { user, loading } = useContext(AuthContext);
 
   // ✅ Fetch logged-in user's role
@@ -17,7 +16,9 @@ const Announcements = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
@@ -31,7 +32,7 @@ const Announcements = () => {
   const { data: announcements, isLoading: loadingAnnouncements } = useQuery({
     queryKey: ["announcements"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/announcements");
+      const res = await axios.get("https://tower-track-server.vercel.app/announcements");
       return res.data;
     },
   });

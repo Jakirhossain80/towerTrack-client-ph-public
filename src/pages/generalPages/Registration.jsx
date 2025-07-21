@@ -9,7 +9,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const Registration = () => {
-  const { createUser } = useContext(AuthContext); // ❌ removed setUser
+  const { createUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -79,7 +79,6 @@ const Registration = () => {
         photoURL: photoURL,
       });
 
-      // ✅ No manual setUser — rely on Firebase listener
       Swal.fire({
         icon: 'success',
         title: 'Registration Successful',
