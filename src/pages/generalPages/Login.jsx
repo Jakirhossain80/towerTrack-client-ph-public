@@ -61,6 +61,12 @@ const Login = () => {
       const result = await googleLogin();
       await fetchJwt(result.user.email); // ✅ JWT fetch after Google sign-in
       showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
+      
+      // ✅ 🧠 Close popup if opened from window.open()
+      if (window.opener != null) {
+        window.close();
+      }
+
       navigate(location.state || "/");
     } catch (err) {
       showErrorAlert(err.message);
