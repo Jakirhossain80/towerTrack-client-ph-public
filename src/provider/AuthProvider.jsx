@@ -38,26 +38,35 @@ const AuthProvider = ({ children }) => {
 
         if (currentUser) {
           const idToken = await currentUser.getIdToken(true);
-         
 
           // ✅ Exchange Firebase token for JWT (set HTTP-only cookie)
-          await axiosSecure.post("/jwt", { token: idToken });
+          try {
+            await axiosSecure.post("/jwt", { token: idToken });
+          } catch (err) {
+            console.error("❌ JWT fetch error:", err);
+            return;
+          }
 
           // ✅ Check if user exists in DB
-          const res = await axiosSecure.get(`/users/${currentUser.email}`).catch(() => null);
-
-          if (!res?.data?.exists) {
-            const userData = {
-              email: currentUser.email,
-              name: currentUser.displayName || "Unnamed",
-              role: "user",
-            };
-            await axiosSecure.post("/users", userData);
+          try {
+            const res = await axiosSecure.get(`/users/${currentUser.email}`);
+            if (!res?.data?.exists) {
+              const userData = {
+                email: currentUser.email,
+                name: currentUser.displayName || "Unnamed",
+                role: "user",
+              };
+              await axiosSecure.post("/users", userData);
+            }
+          } catch (err) {
+            console.error("❌ User check/creation error:", err);
           }
+
         } else {
           // ✅ Clear JWT on logout
           await axiosSecure.post("/logout");
         }
+
       } catch (err) {
         console.error("❌ JWT or user handling error:", err);
       } finally {
