@@ -38,7 +38,7 @@ const AuthProvider = ({ children }) => {
 
         if (currentUser) {
           const idToken = await currentUser.getIdToken(true);
-          console.log("🔥 Firebase ID Token:", idToken);
+         
 
           // ✅ Exchange Firebase token for JWT (set HTTP-only cookie)
           await axiosSecure.post("/jwt", { token: idToken });

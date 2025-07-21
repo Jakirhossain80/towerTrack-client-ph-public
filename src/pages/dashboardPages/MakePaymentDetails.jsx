@@ -1,21 +1,19 @@
 // src/pages/dashboard/MakePaymentDetails.jsx
 import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
 import useAxiosSecure from "../../utils/useAxiosSecure";
 import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Loading from "../../utils/Loading";
-import { useMutation } from "@tanstack/react-query";
-import {
-  loadStripe
-} from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import {
   CardElement,
   Elements,
   useStripe,
-  useElements
+  useElements,
 } from "@stripe/react-stripe-js";
 
 AOS.init();
@@ -37,7 +35,7 @@ const CheckoutForm = ({ rent, data }) => {
     },
     onError: () => {
       Swal.fire("Error", "Payment recorded failed!", "error");
-    }
+    },
   });
 
   const handleSubmit = async (e) => {
@@ -77,7 +75,6 @@ const CheckoutForm = ({ rent, data }) => {
           createdAt: new Date(),
         });
 
-        // ✅ Clear the card input fields
         const cardElement = elements.getElement(CardElement);
         if (cardElement) cardElement.clear();
       }
@@ -111,6 +108,16 @@ const MakePaymentDetails = () => {
   const [discountedRent, setDiscountedRent] = useState(state?.rent);
   const [couponApplied, setCouponApplied] = useState(false);
 
+  // ✅ Get user role from secure API
+  const { data: roleData, isLoading: isRoleLoading } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
+
   useEffect(() => {
     if (state?.rent) setDiscountedRent(state.rent);
   }, [state]);
@@ -133,7 +140,7 @@ const MakePaymentDetails = () => {
     }
   };
 
-  if (loading || !state) return <Loading />;
+  if (loading || isRoleLoading || !state) return <Loading />;
 
   return (
     <div

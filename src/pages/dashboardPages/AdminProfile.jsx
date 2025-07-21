@@ -16,12 +16,22 @@ import {
 } from "react-icons/fa";
 
 const AdminProfile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
+
+  // ✅ Get user role (merged snippet)
+  const { data: roleData, isLoading: loadingRole } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
 
   // Fetch apartments
   const {
@@ -59,7 +69,7 @@ const AdminProfile = () => {
     },
   });
 
-  if (loadingApartments || loadingAgreements || loadingUsers) {
+  if (loading || loadingRole || loadingApartments || loadingAgreements || loadingUsers) {
     return <Loading />;
   }
 
@@ -106,6 +116,12 @@ const AdminProfile = () => {
             <FaEnvelope className="text-emerald-500" />
             <span>
               <strong>Email:</strong> {user?.email || "N/A"}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <FaUserShield className="text-emerald-500" />
+            <span>
+              <strong>Role:</strong> {roleData?.role || "N/A"}
             </span>
           </div>
 

@@ -15,6 +15,20 @@ const PaymentHistory = () => {
   const { user, loading } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
+  // ✅ Fetch user role (merged snippet)
+  const {
+    data: roleData,
+    isLoading: roleLoading,
+  } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
+
+  // 📦 Fetch user payments
   const {
     data: payments = [],
     isLoading,
@@ -33,13 +47,10 @@ const PaymentHistory = () => {
     },
   });
 
-  if (loading || isLoading) return <Loading />;
+  if (loading || isLoading || roleLoading) return <Loading />;
 
   return (
-    <div
-      className="max-w-6xl mx-auto px-4 py-8 font-inter"
-      data-aos="fade-up"
-    >
+    <div className="max-w-6xl mx-auto px-4 py-8 font-inter" data-aos="fade-up">
       <h2 className="text-2xl font-poppins font-semibold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-2">
         <FaMoneyCheckAlt className="text-lime-600" /> Payment History
       </h2>
@@ -66,7 +77,10 @@ const PaymentHistory = () => {
             </thead>
             <tbody>
               {payments.map((payment, index) => (
-                <tr key={payment._id} className="hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-500">
+                <tr
+                  key={payment._id}
+                  className="hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-500"
+                >
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{payment.name}</td>
                   <td className="px-4 py-2">{payment.email}</td>
@@ -76,7 +90,9 @@ const PaymentHistory = () => {
                   <td className="px-4 py-2">{payment.apartment}</td>
                   <td className="px-4 py-2">{payment.month}</td>
                   <td className="px-4 py-2 capitalize">{payment.status}</td>
-                  <td className="px-4 py-2 text-emerald-500">{payment.transactionId}</td>
+                  <td className="px-4 py-2 text-emerald-500">
+                    {payment.transactionId}
+                  </td>
                   <td className="px-4 py-2">
                     {new Date(payment.createdAt).toLocaleDateString()}
                   </td>

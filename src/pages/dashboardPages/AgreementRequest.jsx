@@ -10,17 +10,27 @@ import "aos/dist/aos.css";
 
 const AgreementRequest = () => {
   const axiosSecure = useAxiosSecure();
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     AOS.init({ duration: 800 });
   }, []);
 
+  // ✅ Fetch logged-in user's role
+  const { data: roleData, isLoading: loadingRole } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
+
   // ✅ Fetch pending agreements
   const {
     data: requests = [],
-    isLoading,
+    isLoading: loadingRequests,
   } = useQuery({
     queryKey: ["pendingAgreements"],
     queryFn: async () => {
@@ -52,7 +62,7 @@ const AgreementRequest = () => {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (loading || loadingRole || loadingRequests) return <Loading />;
 
   return (
     <section
@@ -101,7 +111,7 @@ const AgreementRequest = () => {
                   </button>
                   <button
                     onClick={() => handleAction(req._id, req.userEmail, "reject")}
-                    className="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded  duration-300 cursor-pointer"
+                    className="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded duration-300 cursor-pointer"
                   >
                     Reject
                   </button>

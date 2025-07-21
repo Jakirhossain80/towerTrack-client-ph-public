@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../provider/AuthProvider";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { MdAnnouncement } from "react-icons/md";
@@ -10,12 +10,23 @@ import "aos/dist/aos.css";
 
 // Secure Axios instance
 const axiosSecure = axios.create({
- baseURL: "https://tower-track-server.vercel.app",
+  baseURL: "https://tower-track-server.vercel.app",
   withCredentials: true,
 });
 
 const MakeAnnouncement = () => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
+
+  // ✅ Fetch logged-in user's role
+  const { data: roleData, isLoading: loadingRole } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
+
   const {
     register,
     handleSubmit,

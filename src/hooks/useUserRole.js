@@ -5,12 +5,12 @@ import { AuthContext } from "../provider/AuthProvider";
 import axios from "axios";
 
 const axiosSecure = axios.create({
- baseURL: "https://tower-track-server.vercel.app",
+  baseURL: "https://tower-track-server.vercel.app",
   withCredentials: true,
 });
 
 const useUserRole = () => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext); // ✅ Updated to include loading
 
   const {
     data: role = null,
@@ -18,7 +18,7 @@ const useUserRole = () => {
     isError,
   } = useQuery({
     queryKey: ["userRole", user?.email],
-    enabled: !!user?.email, // Only run query if email is available
+    enabled: !loading && !!user?.email, // ✅ Prevent query from firing too early
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/role/${user.email}`);
       return res.data.role;

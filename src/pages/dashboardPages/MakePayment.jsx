@@ -12,10 +12,21 @@ import "aos/dist/aos.css";
 AOS.init();
 
 const MakePayment = () => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
+  // ✅ Fetch user role (for future use if needed)
+  const { data: roleData, isLoading: loadingRole } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
+
+  // ✅ Fetch user's agreement
   const {
     data: agreement = {},
     isLoading,
@@ -34,7 +45,7 @@ const MakePayment = () => {
     navigate("/dashboard/make-payment-details", { state: { ...agreement, ...data } });
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading || loadingRole) return <Loading />;
 
   return (
     <div

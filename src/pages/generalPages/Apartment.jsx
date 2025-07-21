@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { MdApartment } from "react-icons/md";
 import { FaMoneyBill } from "react-icons/fa";
-import { LiaWarehouseSolid } from "react-icons/lia"; 
+import { LiaWarehouseSolid } from "react-icons/lia";
 import { CiSquareAlert } from "react-icons/ci";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -15,7 +15,6 @@ import Loading from "../../utils/Loading";
 
 const Apartment = () => {
   const axiosSecure = useAxiosSecure();
-
   const { user, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -29,6 +28,19 @@ const Apartment = () => {
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
+
+  // ✅ Fetch user role
+  const {
+    data: roleData,
+    isLoading: roleLoading,
+  } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
 
   const {
     data: apartments,
@@ -117,7 +129,7 @@ const Apartment = () => {
     }
   };
 
-  if (loading || isLoading) return <Loading />;
+  if (loading || isLoading || roleLoading) return <Loading />;
   if (isError)
     return (
       <p className="text-center text-rose-500">Failed to load apartments.</p>
@@ -176,41 +188,18 @@ const Apartment = () => {
                 <MdApartment className="text-xl text-emerald-500" />
                 <span className="text-lg font-medium">Apartment No: {apt.apartmentNo}</span>
               </div>
-              
-              
-             
-              
-              
-             
-              
               <p className="flex items-center gap-2">
                 <LiaWarehouseSolid className="text-green-500" />
                 <span>Floor: {apt.floor}</span>
               </p>
-              
-              
-              
-              
-              
-              
               <p className="flex items-center gap-2">
                 <CiSquareAlert className="text-green-500" />
                 <span>Block: {apt.block}</span>
               </p>
-
-
-
-
-
-              
               <p className="flex items-center gap-2">
                 <FaMoneyBill className="text-green-500" />
                 <span>Rent: ৳{apt.rent}</span>
               </p>
-              
-              
-              
-              
               <button
                 onClick={() => handleAgreement(apt)}
                 disabled={hasApplied}

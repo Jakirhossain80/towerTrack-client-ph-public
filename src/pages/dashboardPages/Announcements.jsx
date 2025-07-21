@@ -9,17 +9,26 @@ import "aos/dist/aos.css";
 import { FaBullhorn } from "react-icons/fa";
 
 const Announcements = () => {
-  const axiosSecure = useAxiosSecure(); // ✅ get the Axios instance
+  const axiosSecure = useAxiosSecure();
+  const { user, loading } = useContext(AuthContext);
 
-  const { user } = useContext(AuthContext);
+  // ✅ Fetch logged-in user's role
+  const { data: roleData, isLoading: loadingRole } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
 
-  // Initialize AOS animations
+  // ✅ Initialize AOS
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  // Fetch announcements from backend using axiosSecure
-  const { data: announcements, isLoading } = useQuery({
+  // ✅ Fetch announcements
+  const { data: announcements, isLoading: loadingAnnouncements } = useQuery({
     queryKey: ["announcements"],
     queryFn: async () => {
       const res = await axiosSecure.get("/announcements");
@@ -27,7 +36,7 @@ const Announcements = () => {
     },
   });
 
-  if (isLoading) return <Loading />;
+  if (loading || loadingRole || loadingAnnouncements) return <Loading />;
 
   return (
     <section

@@ -15,14 +15,27 @@ import {
 } from "react-icons/fa";
 
 const MyProfile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
- 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
+  // ✅ Fetch user role (merged)
+  const {
+    data: roleData,
+    isLoading: roleLoading,
+  } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
+
+  // 📦 Fetch agreement data
   const {
     data: agreement,
     isLoading,
@@ -36,9 +49,7 @@ const MyProfile = () => {
     retry: false,
   });
 
-
-
-  if (isLoading) return <Loading />;
+  if (isLoading || roleLoading) return <Loading />;
 
   return (
     <div
@@ -68,6 +79,12 @@ const MyProfile = () => {
             <FaEnvelope className="text-emerald-500" />
             <span><strong>Email:</strong> {user?.email || "N/A"}</span>
           </div>
+
+          {/* Optional Role Display */}
+          {/* <div className="flex items-center gap-2">
+            <FaUserShield className="text-blue-500" />
+            <span><strong>Role:</strong> {roleData?.role || "N/A"}</span>
+          </div> */}
 
           <hr className="my-4 border-gray-300 dark:border-gray-700" />
 

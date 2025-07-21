@@ -1,4 +1,3 @@
-// ✅ Updated ManageCoupons.jsx
 import { useContext, useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
@@ -8,12 +7,10 @@ import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import useUserRole from "../../hooks/useUserRole";
 
 const ManageCoupons = () => {
   const axiosSecure = useAxiosSecure();
-  const { user } = useContext(AuthContext);
-  const { role, isLoading: roleLoading } = useUserRole();
+  const { user, loading } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -23,6 +20,21 @@ const ManageCoupons = () => {
     AOS.init({ duration: 800 });
   }, []);
 
+  // ✅ Securely fetch user role
+  const {
+    data: roleData,
+    isLoading: roleLoading,
+  } = useQuery({
+    queryKey: ["userRole", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
+      return res.data;
+    },
+  });
+
+  const role = roleData?.role;
+
   const { data: coupons = [], isLoading } = useQuery({
     queryKey: ["coupons"],
     queryFn: async () => {
@@ -31,7 +43,6 @@ const ManageCoupons = () => {
     },
   });
 
-  // 🔁 Add or Edit Coupon Mutation
   const mutation = useMutation({
     mutationFn: async (coupon) => {
       const method = editData ? "patch" : "post";
@@ -49,7 +60,6 @@ const ManageCoupons = () => {
     },
   });
 
-  // 🗑️ Delete Coupon Mutation
   const deleteMutation = useMutation({
     mutationFn: async (id) => await axiosSecure.delete(`/coupons/${id}`),
     onSuccess: () => {
@@ -147,7 +157,7 @@ const ManageCoupons = () => {
                       onClick={() => handleDelete(coupon._id)}
                       className="text-rose-600 hover:text-rose-800 cursor-pointer duration-500"
                     >
-                      <FaTrash className="w-6 h-6"  />
+                      <FaTrash className="w-6 h-6" />
                     </button>
                   </td>
                 )}
