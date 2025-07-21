@@ -8,7 +8,7 @@ import { showSuccessAlert, showErrorAlert } from "../../utils/SweetAlert";
 import LottieAnimation from "../../utils/LottieAnimation";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import axios from "axios"; // ✅ Axios to request JWT
+import axios from "axios";
 
 const Login = () => {
   const { signIn, googleLogin } = useContext(AuthContext);
@@ -24,66 +24,72 @@ const Login = () => {
     AOS.init({ duration: 1000, once: true });
   }, []);
 
-  // ✅ Send Firebase user email to backend to get JWT and set cookie
+  // ✅ Get JWT token from backend and set cookie
   const fetchJwt = async (user) => {
-  try {
-    const idToken = await user.getIdToken(); // ✅ Get Firebase ID token
-    await axios.post(
-      `${import.meta.env.VITE_API_URL}/jwt`,
-      { token: idToken }, // ✅ Correct payload expected by server
-      { withCredentials: true }
-    );
-  } catch (err) {
-    console.error("❌ JWT fetch error:", err);
-  }
-};
+    try {
+      const idToken = await user.getIdToken(); // Firebase ID token
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/jwt`,
+        { token: idToken },
+        { withCredentials: true }
+      );
+    } catch (err) {
+      console.error("❌ JWT fetch error:", err);
+    }
+  };
 
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!email || !password) {
-    showErrorAlert("Please enter both email and password.");
-    return;
-  }
-  setLoading(true);
-  try {
-    const result = await signIn(email, password);   // ✅ Firebase login
-    await fetchJwt(result.user);                    // ✅ Corrected: send user object, not just email
-    showSuccessAlert("Welcome back to TowerTrack!");
+  // ✅ Reusable handler for JWT + navigation
+  const handleJwtAndNavigate = async (user) => {
+    await fetchJwt(user);
+    await new Promise((res) => setTimeout(res, 200));
     navigate(location.state || "/");
-  } catch (err) {
-    showErrorAlert("Login failed. Please check your credentials and try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
-
-  const handleGoogleLogin = async () => {
-  try {
-    const result = await googleLogin();             // ✅ Firebase Google sign-in
-    await fetchJwt(result.user);                    // ✅ Send full user object to get ID token
-    showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
-
-    // ✅ Close popup if login initiated from window.open()
-    if (window.opener != null) {
-      window.close();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      showErrorAlert("Please enter both email and password.");
+      return;
     }
 
-    navigate(location.state || "/");
-  } catch (err) {
-    showErrorAlert(err.message);
-  }
-};
+    setLoading(true);
+    try {
+      const result = await signIn(email, password);
+      await handleJwtAndNavigate(result.user);
+      showSuccessAlert("Welcome back to TowerTrack!");
+    } catch (err) {
+      showErrorAlert("Login failed. Please check your credentials and try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const result = await googleLogin();
+      await handleJwtAndNavigate(result.user);
+      showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
+
+      try {
+        if (window.opener != null) window.close();
+      } catch (err) {
+        console.warn("window.close blocked by policy:", err);
+      }
+    } catch (err) {
+      showErrorAlert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 transition-all duration-500">
       <div
         data-aos="zoom-in"
         className="flex flex-col md:flex-row items-center gap-12 px-8 py-12 rounded-3xl 
-          border border-white/20 dark:border-white/10 shadow-2xl 
-          backdrop-blur-md bg-white/30 dark:bg-white/10"
+        border border-white/20 dark:border-white/10 shadow-2xl 
+        backdrop-blur-md bg-white/30 dark:bg-white/10"
       >
         {/* Login Card */}
         <div className="w-full sm:w-96 p-8 rounded-3xl backdrop-blur-lg bg-white/30 dark:bg-white/10 border border-white/20 dark:border-white/10 shadow-lg transition-all duration-500">
@@ -95,6 +101,7 @@ const handleSubmit = async (e) => {
             <input
               type="email"
               placeholder="Email"
+              autoComplete="email"
               className="w-full px-4 py-3 rounded-xl bg-gray-200/60 dark:bg-white/10 border border-white/20 dark:border-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-lime-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -104,6 +111,7 @@ const handleSubmit = async (e) => {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
+                autoComplete="current-password"
                 className="w-full px-4 py-3 rounded-xl bg-gray-200/60 dark:bg-white/10 border border-white/20 dark:border-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-lime-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -112,7 +120,11 @@ const handleSubmit = async (e) => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-4 flex items-center cursor-pointer text-gray-600 dark:text-gray-400"
               >
-                {showPassword ? <AiOutlineEyeInvisible className="text-xl" /> : <AiOutlineEye className="text-xl" />}
+                {showPassword ? (
+                  <AiOutlineEyeInvisible className="text-xl" />
+                ) : (
+                  <AiOutlineEye className="text-xl" />
+                )}
               </div>
             </div>
 
@@ -145,7 +157,10 @@ const handleSubmit = async (e) => {
 
           <p className="mt-1 text-center text-sm text-gray-700 dark:text-gray-400">
             Don’t have an account?{" "}
-            <Link to="/registration" className="text-lime-600 dark:text-lime-500 hover:underline font-medium">
+            <Link
+              to="/registration"
+              className="text-lime-600 dark:text-lime-500 hover:underline font-medium"
+            >
               Register here
             </Link>
           </p>
@@ -153,7 +168,11 @@ const handleSubmit = async (e) => {
 
         {/* Lottie Animation */}
         <div className="hidden md:block">
-          <LottieAnimation src="/login-lime.json" width="500px" height="500px" />
+          <LottieAnimation
+            src="/login-lime.json"
+            width="500px"
+            height="500px"
+          />
         </div>
       </div>
     </div>
