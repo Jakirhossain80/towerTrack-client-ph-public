@@ -25,53 +25,57 @@ const Login = () => {
   }, []);
 
   // ✅ Send Firebase user email to backend to get JWT and set cookie
-  const fetchJwt = async (email) => {
-    try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/jwt`,
-        { email },
-        { withCredentials: true } // 💡 Allows server to set HTTP-only cookie
-      );
-    } catch (err) {
-      console.error("JWT fetch error:", err);
-    }
-  };
+  const fetchJwt = async (user) => {
+  try {
+    const idToken = await user.getIdToken(); // ✅ Get Firebase ID token
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/jwt`,
+      { token: idToken }, // ✅ Correct payload expected by server
+      { withCredentials: true }
+    );
+  } catch (err) {
+    console.error("❌ JWT fetch error:", err);
+  }
+};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      showErrorAlert("Please enter both email and password.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const result = await signIn(email, password);
-      await fetchJwt(result.user.email); // ✅ Call to backend after Firebase login
-      showSuccessAlert("Welcome back to TowerTrack!");
-      navigate(location.state || "/");
-    } catch (err) {
-      showErrorAlert("Login failed. Please check your credentials and try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!email || !password) {
+    showErrorAlert("Please enter both email and password.");
+    return;
+  }
+  setLoading(true);
+  try {
+    const result = await signIn(email, password);   // ✅ Firebase login
+    await fetchJwt(result.user);                    // ✅ Corrected: send user object, not just email
+    showSuccessAlert("Welcome back to TowerTrack!");
+    navigate(location.state || "/");
+  } catch (err) {
+    showErrorAlert("Login failed. Please check your credentials and try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleGoogleLogin = async () => {
-    try {
-      const result = await googleLogin();
-      await fetchJwt(result.user.email); // ✅ JWT fetch after Google sign-in
-      showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
-      
-      // ✅ 🧠 Close popup if opened from window.open()
-      if (window.opener != null) {
-        window.close();
-      }
+  try {
+    const result = await googleLogin();             // ✅ Firebase Google sign-in
+    await fetchJwt(result.user);                    // ✅ Send full user object to get ID token
+    showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
 
-      navigate(location.state || "/");
-    } catch (err) {
-      showErrorAlert(err.message);
+    // ✅ Close popup if login initiated from window.open()
+    if (window.opener != null) {
+      window.close();
     }
-  };
+
+    navigate(location.state || "/");
+  } catch (err) {
+    showErrorAlert(err.message);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 transition-all duration-500">
