@@ -69,6 +69,7 @@ const Login = () => {
     try {
       const result = await googleLogin();
       await handleJwtAndNavigate(result.user);
+       await new Promise((res) => setTimeout(res, 200));
       showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
 
       try {
