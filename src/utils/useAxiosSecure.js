@@ -1,29 +1,29 @@
 // src/hooks/useAxiosSecure.jsx
-import axios from "axios";
+import axios              from "axios";
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate }    from "react-router-dom";
 import { signOut, getAuth } from "firebase/auth";
-import app from "../firebase.config";
-import { AuthContext } from "../provider/AuthProvider";
+import app                from "../firebase.config";
+import { AuthContext }    from "../provider/AuthProvider";   // ✅ grab current user
 
 const auth = getAuth(app);
 
-// ─────────────── Secure Axios Instance ───────────────
+/* ───────────────────────────── secure instance ─────────────────────────── */
 const axiosSecure = axios.create({
-  baseURL: "https://tower-track-server.vercel.app",
+ baseURL: "https://tower-track-server.vercel.app",
   withCredentials: true,
 });
 
 const useAxiosSecure = () => {
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user }  = useContext(AuthContext);                // ✅ logged-in user
+  const navigate   = useNavigate();
 
   useEffect(() => {
-    // ✅ Request Interceptor — Add Firebase ID Token
+    /* ---------- request interceptor: attach Firebase ID token ---------- */
     const reqId = axiosSecure.interceptors.request.use(
       async (config) => {
         if (user) {
-          const token = await user.getIdToken();
+          const token = await user.getIdToken();            // fresh JWT
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -31,7 +31,7 @@ const useAxiosSecure = () => {
       (error) => Promise.reject(error)
     );
 
-    // ✅ Response Interceptor — Auto Sign-out on 401/403
+    /* ---------- response interceptor: handle auth errors ---------- */
     const resId = axiosSecure.interceptors.response.use(
       (res) => res,
       (err) => {
@@ -42,13 +42,17 @@ const useAxiosSecure = () => {
       }
     );
 
+    /* eject interceptors on unmount */
     return () => {
       axiosSecure.interceptors.request.eject(reqId);
       axiosSecure.interceptors.response.eject(resId);
     };
   }, [user, navigate]);
 
-  return axiosSecure;
+  return axiosSecure;                                       // ✅ expose instance
 };
 
 export default useAxiosSecure;
+
+
+
