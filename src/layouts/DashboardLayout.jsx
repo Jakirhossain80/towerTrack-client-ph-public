@@ -34,6 +34,8 @@ const DashboardLayout = () => {
 
   if (loading || isLoading) return <Loading />;
 
+  if (!role || !user) return null; // ✅ Prevents React error if role is not loaded yet
+
   const navLinks = [];
 
   if (role === "user" || role === "member") {
