@@ -21,6 +21,7 @@ import MakePayment from "../pages/dashboardPages/MakePayment";
 import MakePaymentDetails from "../pages/dashboardPages/MakePaymentDetails";
 import PaymentHistory from "../pages/dashboardPages/PaymentHistory";
 import NoticeBoard from "../pages/dashboardPages/NoticeBoard";
+import UserOrMemberRoute from "../provider/UserOrMemberRoute";
 
 export const router = createBrowserRouter([
   {
@@ -61,17 +62,17 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/my-profile",
         element: (
-          <MemberRoute>
+          <UserOrMemberRoute>
             <MyProfile />
-          </MemberRoute>
+          </UserOrMemberRoute>
         )
       },
       {
         path: "/dashboard/announcements",
         element: (
-          <MemberRoute>
+          <UserOrMemberRoute>
             <Announcements />
-          </MemberRoute>
+          </UserOrMemberRoute>
         )
       },
       {
