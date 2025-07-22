@@ -142,7 +142,7 @@ const DashboardLayout = () => {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Main Content detail */}
       <div className="flex-1 flex flex-col overflow-y-auto transition-all duration-500">
         <div className="lg:hidden p-4">
           <button
@@ -159,5 +159,6 @@ const DashboardLayout = () => {
     </div>
   );
 };
+
 
 export default DashboardLayout;
