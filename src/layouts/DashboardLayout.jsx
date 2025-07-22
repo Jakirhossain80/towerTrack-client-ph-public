@@ -8,17 +8,16 @@ import { RiCouponLine } from "react-icons/ri";
 import { LuHandshake } from "react-icons/lu";
 import { FaPeopleLine, FaMoneyCheckDollar } from "react-icons/fa6";
 import { LiaClipboardListSolid } from "react-icons/lia";
-
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
-import { Link } from "react-router";
+import { Link } from "react-router-dom"; // ✅ Fixed import
 import useUserRole from "../hooks/useUserRole";
 
 const DashboardLayout = () => {
   const { user, logout, loading } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { role, isLoading } = useUserRole();
+  const { roleData, isLoading } = useUserRole();
   const navigate = useNavigate();
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -33,8 +32,9 @@ const DashboardLayout = () => {
   };
 
   if (loading || isLoading) return <Loading />;
+  if (!roleData?.role || !user) return null;
 
-  if (!role || !user) return null; // ✅ Prevents React error if role is not loaded yet
+  const role = roleData.role;
 
   const navLinks = [];
 
@@ -142,7 +142,7 @@ const DashboardLayout = () => {
         </div>
       </div>
 
-      {/* Main Content detail */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-y-auto transition-all duration-500">
         <div className="lg:hidden p-4">
           <button
@@ -159,6 +159,5 @@ const DashboardLayout = () => {
     </div>
   );
 };
-
 
 export default DashboardLayout;

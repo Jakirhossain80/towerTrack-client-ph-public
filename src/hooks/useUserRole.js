@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../provider/AuthProvider";
 import axios from "axios";
 
-// Basic Axios instance without JWT credentials
 const axiosSecure = axios.create({
   baseURL: "https://tower-track-server.vercel.app",
 });
@@ -13,7 +12,7 @@ const useUserRole = () => {
   const { user, loading } = useContext(AuthContext);
 
   const {
-    data: role = null,
+    data: roleData = null,
     isLoading,
     isError,
   } = useQuery({
@@ -21,11 +20,11 @@ const useUserRole = () => {
     enabled: !loading && !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/role/${user.email}`);
-      return res.data.role;
+      return res.data; // ✅ Return full roleData object
     },
   });
 
-  return { role, isLoading, isError };
+  return { roleData, isLoading, isError };
 };
 
 export default useUserRole;
