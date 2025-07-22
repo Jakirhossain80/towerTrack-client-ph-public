@@ -8,6 +8,7 @@ import { showSuccessAlert, showErrorAlert } from "../../utils/SweetAlert";
 import LottieAnimation from "../../utils/LottieAnimation";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import axios from "axios";
 
 const Login = () => {
   const { signIn, googleLogin } = useContext(AuthContext);
@@ -33,6 +34,15 @@ const Login = () => {
     setLoading(true);
     try {
       const result = await signIn(email, password);
+      const loggedInUser = result.user;
+
+      const saveUser = {
+        email: loggedInUser.email,
+        name: loggedInUser.displayName || "No Name",
+        role: "user",
+      };
+
+      await axios.post("https://tower-track-server.vercel.app/users", saveUser);
       navigate(location.state || "/");
       showSuccessAlert("Welcome back to TowerTrack!");
     } catch (err) {
@@ -46,6 +56,15 @@ const Login = () => {
     setLoading(true);
     try {
       const result = await googleLogin();
+      const user = result.user;
+
+      const saveUser = {
+        email: user.email,
+        name: user.displayName || "Google User",
+        role: "user",
+      };
+
+      await axios.post("https://tower-track-server.vercel.app/users", saveUser);
       navigate(location.state || "/");
       showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
 

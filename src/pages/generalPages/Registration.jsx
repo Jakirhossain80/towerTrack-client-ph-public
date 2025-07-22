@@ -7,6 +7,7 @@ import { updateProfile } from 'firebase/auth';
 import LottieAnimation from '../../utils/LottieAnimation';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import axios from 'axios';
 
 const Registration = () => {
   const { createUser } = useContext(AuthContext);
@@ -78,6 +79,15 @@ const Registration = () => {
         displayName: name,
         photoURL: photoURL,
       });
+
+      // Save user to MongoDB users collection
+      const saveUser = {
+        name,
+        email,
+        role: "user",
+      };
+
+      await axios.post("https://tower-track-server.vercel.app/users", saveUser);
 
       Swal.fire({
         icon: 'success',
