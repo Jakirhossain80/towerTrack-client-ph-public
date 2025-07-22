@@ -41,10 +41,14 @@ const MyProfile = () => {
     queryKey: ["agreement", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/agreements/member/${user.email}`
-      );
-      return res.data;
+      try {
+        const res = await axios.get(
+          `https://tower-track-server.vercel.app/agreements/member/${user.email}`
+        );
+        return res.data;
+      } catch {
+        return null; // if no document found or error, return null
+      }
     },
     retry: false,
   });
@@ -79,12 +83,6 @@ const MyProfile = () => {
             <FaEnvelope className="text-emerald-500" />
             <span><strong>Email:</strong> {user?.email || "N/A"}</span>
           </div>
-
-          {/* Optional Role Display */}
-          {/* <div className="flex items-center gap-2">
-            <FaUserShield className="text-blue-500" />
-            <span><strong>Role:</strong> {roleData?.role || "N/A"}</span>
-          </div> */}
 
           <hr className="my-4 border-gray-300 dark:border-gray-700" />
 
