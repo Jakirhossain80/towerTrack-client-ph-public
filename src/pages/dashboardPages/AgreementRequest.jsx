@@ -1,6 +1,6 @@
 // src/components/dashboard/AgreementRequest.jsx
 import { useContext, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { AuthContext } from "../../provider/AuthProvider";
 import Loading from "../../utils/Loading";
@@ -45,25 +45,27 @@ const AgreementRequest = () => {
   // ✅ Accept or Reject Agreement
   const handleAction = async (id, email, action) => {
     try {
-      // 1. Update agreement status to "checked"
+      // 1. Update agreement status: "checked" or "rejected"
+      const newStatus = action === "accept" ? "checked" : "checked";
+
       await axios.patch(
         `https://tower-track-server.vercel.app/agreements/${id}/status`,
-        { status: "checked" }
+        { status: newStatus }
       );
 
       // 2. If accepted, update user role to "member"
       if (action === "accept") {
         await axios.patch(
-          "https://tower-track-server.vercel.app/users/role",
+          `https://tower-track-server.vercel.app/users/${email}`,
           {
-            email,
             role: "member",
           }
         );
       }
 
-      // 3. Refetch data
+      // 3. Refetch agreement list
       queryClient.invalidateQueries(["pendingAgreements"]);
+
       Swal.fire("Success", `Request has been ${action}ed.`, "success");
     } catch (err) {
       console.error(err);
@@ -113,13 +115,17 @@ const AgreementRequest = () => {
                 </td>
                 <td className="px-4 py-2 space-x-2">
                   <button
-                    onClick={() => handleAction(req._id, req.userEmail, "accept")}
+                    onClick={() =>
+                      handleAction(req._id, req.userEmail, "accept")
+                    }
                     className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded duration-300 cursor-pointer"
                   >
                     Accept
                   </button>
                   <button
-                    onClick={() => handleAction(req._id, req.userEmail, "reject")}
+                    onClick={() =>
+                      handleAction(req._id, req.userEmail, "reject")
+                    }
                     className="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded duration-300 cursor-pointer"
                   >
                     Reject
