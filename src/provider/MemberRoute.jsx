@@ -26,7 +26,8 @@ const MemberRoute = ({ children }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (roleData?.role !== "member") {
+  // Allow access if role is either 'member' or 'user'
+  if (roleData?.role !== "member" && roleData?.role !== "user") {
     return <Navigate to="/unauthorized" replace />;
   }
 
