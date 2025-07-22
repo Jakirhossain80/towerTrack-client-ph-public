@@ -24,6 +24,23 @@ const Login = () => {
     AOS.init({ duration: 1000, once: true });
   }, []);
 
+  const saveUserIfNew = async (email, name) => {
+    try {
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/${email}`
+      );
+      if (!res.data.exists) {
+        await axios.post("https://tower-track-server.vercel.app/users", {
+          email,
+          name,
+          role: "user",
+        });
+      }
+    } catch (error) {
+      console.error("User saving failed:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -36,14 +53,12 @@ const Login = () => {
       const result = await signIn(email, password);
       const loggedInUser = result.user;
 
-      const saveUser = {
-        email: loggedInUser.email,
-        name: loggedInUser.displayName || "No Name",
-        role: "user",
-      };
+      await saveUserIfNew(
+        loggedInUser.email,
+        loggedInUser.displayName || "No Name"
+      );
 
-      await axios.post("https://tower-track-server.vercel.app/users", saveUser);
-      navigate(location.state || "/");
+      navigate(location.state || "/dashboard/my-profile");
       showSuccessAlert("Welcome back to TowerTrack!");
     } catch (err) {
       showErrorAlert("Login failed. Please check your credentials and try again.");
@@ -58,14 +73,9 @@ const Login = () => {
       const result = await googleLogin();
       const user = result.user;
 
-      const saveUser = {
-        email: user.email,
-        name: user.displayName || "Google User",
-        role: "user",
-      };
+      await saveUserIfNew(user.email, user.displayName || "Google User");
 
-      await axios.post("https://tower-track-server.vercel.app/users", saveUser);
-      navigate(location.state || "/");
+      navigate(location.state || "/dashboard/my-profile");
       showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
 
       try {
@@ -88,7 +98,6 @@ const Login = () => {
         border border-white/20 dark:border-white/10 shadow-2xl 
         backdrop-blur-md bg-white/30 dark:bg-white/10"
       >
-        {/* Login Card */}
         <div className="w-full sm:w-96 p-8 rounded-3xl backdrop-blur-lg bg-white/30 dark:bg-white/10 border border-white/20 dark:border-white/10 shadow-lg transition-all duration-500">
           <h2 className="text-2xl font-bold text-lime-600 dark:text-lime-500 mb-8 text-center font-poppins">
             Login to TowerTrack
@@ -163,13 +172,8 @@ const Login = () => {
           </p>
         </div>
 
-        {/* Lottie Animation */}
         <div className="hidden md:block">
-          <LottieAnimation
-            src="/login-lime.json"
-            width="500px"
-            height="500px"
-          />
+          <LottieAnimation src="/login-lime.json" width="500px" height="500px" />
         </div>
       </div>
     </div>
