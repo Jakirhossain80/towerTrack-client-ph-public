@@ -2,16 +2,22 @@
 import { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
+import useUserRole from "../hooks/useUserRole";
 import Loading from "../utils/Loading";
 
 const AdminRoute = ({ children }) => {
-  const { user, loading, userRole } = useContext(AuthContext); // assumes userRole is provided by AuthProvider
+  const { user, loading } = useContext(AuthContext);
+  const { roleData, isLoading } = useUserRole();
   const location = useLocation();
 
-  if (loading) return <Loading />;
+  // Wait for both Firebase and role info
+  if (loading || isLoading) return <Loading />;
 
-  if (user && userRole === "admin") return children;
+  if (user && roleData?.role === "admin") {
+    return children;
+  }
 
+  // Redirect unauthorized users
   return <Navigate to="/unauthorized" state={{ from: location }} replace />;
 };
 
