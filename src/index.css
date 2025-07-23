@@ -26,6 +26,11 @@
   @apply !bg-lime-500 opacity-100 !scale-150;
 }
 
+.swal2-confirm{
+  @apply !bg-lime-500
+
+}
+
 
 html {
   scroll-behavior: smooth;

@@ -192,7 +192,7 @@ const Apartment = () => {
                 <span>Floor: {apt.floor}</span>
               </p>
               <p className="flex items-center gap-2">
-                <CiSquareAlert className="text-green-500" />
+                <CiSquareAlert className="text-green-500 font-bold" />
                 <span>Block: {apt.block}</span>
               </p>
               <p className="flex items-center gap-2">

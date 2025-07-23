@@ -12,11 +12,11 @@ const Coupons = () => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  // ✅ Public coupon fetch (no JWT)
+  // ✅ Coupon fetch (no JWT)
   const { data: coupons = [], isLoading } = useQuery({
-    queryKey: ["public-coupons"],
+    queryKey: ["coupons"],
     queryFn: async () => {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/public/coupons`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/coupons`);
       return res.data;
     },
   });
