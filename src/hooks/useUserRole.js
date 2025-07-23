@@ -17,10 +17,10 @@ const useUserRole = () => {
     isError,
   } = useQuery({
     queryKey: ["userRole", user?.email],
-    enabled: !loading && !!user?.email,
+    enabled: !loading && !!user?.email, // Prevents query when email is not ready
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/role/${user.email}`);
-      return res.data; // ✅ Return full roleData object
+      return res.data;
     },
   });
 

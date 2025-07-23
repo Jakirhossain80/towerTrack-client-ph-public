@@ -6,26 +6,22 @@ import useUserRole from "../hooks/useUserRole";
 import Loading from "../utils/Loading";
 
 const AdminRoute = ({ children }) => {
-  const { user, loading } = useContext(AuthContext);
-  const { roleData, isLoading } = useUserRole();
+  const { user, loading: authLoading } = useContext(AuthContext);
+  const { roleData, isLoading: roleLoading } = useUserRole();
   const location = useLocation();
 
-  // ✅ Wait for Firebase Auth or role loading
-  if (loading || isLoading) {
-    return <Loading />;
-  }
+  // ✅ While auth or role is loading, show loader
+  if (authLoading || roleLoading) return <Loading />;
 
-  // ✅ While roleData is not yet resolved (null), prevent premature redirect
-  if (!roleData) {
-    return null;
-  }
+  // ✅ Still waiting for roleData? Render nothing until it's resolved
+  if (!roleData) return null;
 
-  // ✅ If user is admin, allow access
+  // ✅ Allow only admin
   if (user && roleData?.role === "admin") {
     return children;
   }
 
-  // ❌ Otherwise redirect to /unauthorized
+  // ❌ Redirect to /unauthorized if not admin
   return <Navigate to="/unauthorized" state={{ from: location }} replace />;
 };
 
