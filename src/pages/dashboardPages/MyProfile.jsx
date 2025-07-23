@@ -107,8 +107,8 @@ const MyProfile = () => {
               <FaCalendarCheck className="text-lime-600" />
               <span>
                 <strong>Agreement Accepted Date:</strong>{" "}
-                {agreement?.updatedAt
-                  ? new Date(agreement?.updatedAt).toLocaleDateString()
+                {agreement?.createdAt
+                  ? new Date(agreement?.createdAt).toLocaleDateString()
                   : "None"}
               </span>
             </div>
