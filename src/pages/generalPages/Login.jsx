@@ -81,19 +81,19 @@ const handleGoogleLogin = async () => {
 
     // ✅ Then TRY closing (optional)
     // But only if you know it was a popup (you can keep this or remove it)
-//     setTimeout(() => {
-//       try {
-//         if (window.opener) window.close();
-//       } catch (err) {
-//         console.warn("window.close() was blocked by browser:", err);
-//       }
-//     }, 500); // delay ensures navigation completes
-//   } catch (err) {
-//     showErrorAlert(err.message);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+    // setTimeout(() => {
+    //   try {
+    //     if (window.opener) window.close();
+    //   } catch (err) {
+    //     console.warn("window.close() was blocked by browser:", err);
+    //   }
+    // }, 500); // delay ensures navigation completes
+  } catch (err) {
+    showErrorAlert(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   return (
