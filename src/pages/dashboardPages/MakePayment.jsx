@@ -20,19 +20,23 @@ const MakePayment = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(`https://tower-track-server.vercel.app/users/role/${user.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      );
       return res.data;
     },
   });
 
-  // ✅ Fetch user's agreement
+  // ✅ Fetch user's agreement (🔧 FIXED ROUTE)
   const {
     data: agreement = {},
     isLoading,
   } = useQuery({
     queryKey: ["agreement", user?.email],
     queryFn: async () => {
-      const res = await axios.get(`https://tower-track-server.vercel.app/agreements/${user?.email}`);
+      const res = await axios.get(
+        `https://tower-track-server.vercel.app/agreements/member/${user?.email}`
+      );
       return res.data;
     },
     enabled: !!user?.email,
@@ -41,7 +45,9 @@ const MakePayment = () => {
   const { register, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
-    navigate("/dashboard/make-payment-details", { state: { ...agreement, ...data } });
+    navigate("/dashboard/make-payment-details", {
+      state: { ...agreement, ...data },
+    });
   };
 
   if (isLoading || loadingRole) return <Loading />;
@@ -108,7 +114,9 @@ const MakePayment = () => {
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text dark:text-gray-200">Apartment / Room No</span>
+            <span className="label-text dark:text-gray-200">
+              Apartment / Room No
+            </span>
           </label>
           <input
             readOnly
@@ -120,7 +128,9 @@ const MakePayment = () => {
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text dark:text-gray-200">Rent Amount (৳)</span>
+            <span className="label-text dark:text-gray-200">
+              Rent Amount (৳)
+            </span>
           </label>
           <input
             readOnly
@@ -132,7 +142,9 @@ const MakePayment = () => {
 
         <div className="form-control col-span-1 md:col-span-2">
           <label className="label">
-            <span className="label-text dark:text-gray-200 px-2">Select Month</span>
+            <span className="label-text dark:text-gray-200 px-2">
+              Select Month
+            </span>
           </label>
           <select
             {...register("month", { required: true })}
@@ -140,8 +152,18 @@ const MakePayment = () => {
           >
             <option value="">Select Month</option>
             {[
-              "January", "February", "March", "April", "May", "June",
-              "July", "August", "September", "October", "November", "December",
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December",
             ].map((month) => (
               <option key={month} value={month}>
                 {month}
