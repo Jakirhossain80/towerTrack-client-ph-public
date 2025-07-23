@@ -10,14 +10,22 @@ const AdminRoute = ({ children }) => {
   const { roleData, isLoading } = useUserRole();
   const location = useLocation();
 
-  // Wait for both Firebase and role info
-  if (loading || isLoading) return <Loading />;
+  // ✅ Wait for Firebase Auth or role loading
+  if (loading || isLoading) {
+    return <Loading />;
+  }
 
+  // ✅ While roleData is not yet resolved (null), prevent premature redirect
+  if (!roleData) {
+    return null;
+  }
+
+  // ✅ If user is admin, allow access
   if (user && roleData?.role === "admin") {
     return children;
   }
 
-  // Redirect unauthorized users
+  // ❌ Otherwise redirect to /unauthorized
   return <Navigate to="/unauthorized" state={{ from: location }} replace />;
 };
 
