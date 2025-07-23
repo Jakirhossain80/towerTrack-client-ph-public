@@ -58,8 +58,8 @@ const Login = () => {
         loggedInUser.displayName || "No Name"
       );
 
-      navigate(location.state || "/");
       showSuccessAlert("Welcome back to TowerTrack!");
+      navigate("/"); // ✅ Always redirect to home after login
     } catch (err) {
       showErrorAlert("Login failed. Please check your credentials and try again.");
     } finally {
@@ -67,34 +67,22 @@ const Login = () => {
     }
   };
 
-const handleGoogleLogin = async () => {
-  setLoading(true);
-  try {
-    const result = await googleLogin();
-    const user = result.user;
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const result = await googleLogin();
+      const user = result.user;
 
-    await saveUserIfNew(user.email, user.displayName || "Google User");
+      await saveUserIfNew(user.email, user.displayName || "Google User");
 
-    // ✅ Redirect FIRST
-    navigate(location.state || "/");
-    showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
-
-    // ✅ Then TRY closing (optional)
-    // But only if you know it was a popup (you can keep this or remove it)
-    // setTimeout(() => {
-    //   try {
-    //     if (window.opener) window.close();
-    //   } catch (err) {
-    //     console.warn("window.close() was blocked by browser:", err);
-    //   }
-    // }, 500); // delay ensures navigation completes
-  } catch (err) {
-    showErrorAlert(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
+      showSuccessAlert("Google login successful! Redirecting to TowerTrack...");
+      navigate("/"); // ✅ Proper redirect after Google login
+    } catch (err) {
+      showErrorAlert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 transition-all duration-500">
