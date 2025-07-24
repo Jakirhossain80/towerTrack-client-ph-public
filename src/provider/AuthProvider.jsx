@@ -1,5 +1,7 @@
 // src/provider/AuthProvider.jsx
 import React, { createContext, useEffect, useState } from "react";
+import axios from "axios";
+
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -15,6 +17,16 @@ import app from "../firebase.config";
 // Create context
 export const AuthContext = createContext();
 
+const issueToken = async (user) => {
+  if (user?.email) {
+    await axios.post(
+      "https://tower-track-server.vercel.app/jwt",
+      { email: user.email },
+      { withCredentials: true } // send cookie
+    );
+  }
+};
+
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
@@ -27,6 +39,11 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setLoading(true);
       setUser(currentUser);
+      // ✅ Issue JWT token via HTTP-only cookie
+      if (currentUser) {
+        await issueToken(currentUser);
+      }
+
       setLoading(false);
     });
 
@@ -53,7 +70,12 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      await signOut(auth);
+      await signOut(auth); // Firebase sign-out
+      await axios.post(
+        "https://tower-track-server.vercel.app/logout",
+        {},
+        { withCredentials: true } // send cookie for clearing
+      );
       setUser(null);
     } catch (error) {
       console.error("Logout failed:", error);
@@ -72,7 +94,9 @@ const AuthProvider = ({ children }) => {
     setLoading,
   };
 
-  return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

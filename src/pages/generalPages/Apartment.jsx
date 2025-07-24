@@ -2,10 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { MdApartment } from "react-icons/md";
+import { MdApartment, MdCropLandscape } from "react-icons/md";
 import { FaMoneyBill } from "react-icons/fa";
 import { LiaWarehouseSolid } from "react-icons/lia";
-import { CiSquareAlert } from "react-icons/ci";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Swal from "sweetalert2";
@@ -192,7 +191,7 @@ const Apartment = () => {
                 <span>Floor: {apt.floor}</span>
               </p>
               <p className="flex items-center gap-2">
-                <CiSquareAlert className="text-green-500 font-bold" />
+                <MdCropLandscape className="text-green-500" />
                 <span>Block: {apt.block}</span>
               </p>
               <p className="flex items-center gap-2">
