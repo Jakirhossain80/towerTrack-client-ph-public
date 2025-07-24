@@ -12,7 +12,7 @@ const Coupons = () => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  // ✅ Coupon fetch (no JWT)
+  // ✅ Coupon fetch (no JWT, will implement later)
   const { data: coupons = [], isLoading } = useQuery({
     queryKey: ["coupons"],
     queryFn: async () => {
