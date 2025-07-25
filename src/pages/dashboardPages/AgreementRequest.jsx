@@ -1,7 +1,8 @@
 // src/components/dashboard/AgreementRequest.jsx
 import { useContext, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+//import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure"
 import { AuthContext } from "../../provider/AuthProvider";
 import Loading from "../../utils/Loading";
 import Swal from "sweetalert2";
@@ -21,8 +22,8 @@ const AgreementRequest = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      const res = await axiosSecure.get(
+        `/users/role/${user.email}`
       );
       return res.data;
     },
@@ -35,8 +36,8 @@ const AgreementRequest = () => {
   } = useQuery({
     queryKey: ["pendingAgreements"],
     queryFn: async () => {
-      const res = await axios.get(
-        "https://tower-track-server.vercel.app/agreements?status=pending"
+      const res = await axiosSecure.get(
+        "/agreements?status=pending"
       );
       return res.data;
     },
@@ -48,15 +49,15 @@ const AgreementRequest = () => {
       // 1. Update agreement status: "checked" or "rejected"
       const newStatus = action === "accept" ? "checked" : "checked";
 
-      await axios.patch(
-        `https://tower-track-server.vercel.app/agreements/${id}/status`,
+      await axiosSecure.patch(
+        `/agreements/${id}/status`,
         { status: newStatus }
       );
 
       // 2. If accepted, update user role to "member"
       if (action === "accept") {
-        await axios.patch(
-          `https://tower-track-server.vercel.app/users/${email}`,
+        await axiosSecure.patch(
+          `/users/${email}`,
           {
             role: "member",
           }

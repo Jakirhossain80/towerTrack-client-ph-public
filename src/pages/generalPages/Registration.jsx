@@ -9,6 +9,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import axios from 'axios';
 
+
 const Registration = () => {
   const { createUser } = useContext(AuthContext);
   const navigate = useNavigate();

@@ -7,6 +7,7 @@ import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure";
 
 const ManageCoupons = () => {
   const { user, loading } = useContext(AuthContext);
@@ -26,7 +27,7 @@ const ManageCoupons = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(`https://tower-track-server.vercel.app/users/role/${user.email}`);
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
       return res.data;
     },
   });
@@ -36,7 +37,7 @@ const ManageCoupons = () => {
   const { data: coupons = [], isLoading } = useQuery({
     queryKey: ["coupons"],
     queryFn: async () => {
-      const res = await axios.get("https://tower-track-server.vercel.app/coupons");
+      const res = await axiosSecure.get("/coupons");
       return res.data;
     },
   });
@@ -47,7 +48,7 @@ const ManageCoupons = () => {
       const url = editData
         ? `https://tower-track-server.vercel.app/coupons/${editData._id}`
         : "https://tower-track-server.vercel.app/coupons";
-      return axios[method](url, coupon);
+      return axiosSecure[method](url, coupon);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["coupons"]);
@@ -62,7 +63,7 @@ const ManageCoupons = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) =>
-      await axios.delete(`https://tower-track-server.vercel.app/coupons/${id}`),
+      await axiosSecure.delete(`/coupons/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries(["coupons"]);
       Swal.fire("Deleted!", "Coupon has been deleted.", "success");

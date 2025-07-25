@@ -9,6 +9,7 @@ import LottieAnimation from "../../utils/LottieAnimation";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure";
 
 const Login = () => {
   const { signIn, googleLogin } = useContext(AuthContext);
@@ -26,8 +27,8 @@ const Login = () => {
 
   const saveUserIfNew = async (email, name) => {
     try {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/users/${email}`
+      const res = await axiosSecure.get(
+        `/users/${email}`
       );
       if (!res.data.exists) {
         await axios.post("https://tower-track-server.vercel.app/users", {

@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure";
 import Loading from "../../utils/Loading";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -26,7 +27,7 @@ const CheckoutForm = ({ rent, data }) => {
 
   const mutation = useMutation({
     mutationFn: async (paymentData) => {
-      const res = await axios.post("https://tower-track-server.vercel.app/payments", paymentData);
+      const res = await axiosSecure.post("/payments", paymentData);
       return res.data;
     },
     onSuccess: () => {
@@ -44,7 +45,7 @@ const CheckoutForm = ({ rent, data }) => {
     setProcessing(true);
 
     try {
-      const { data: clientSecret } = await axios.post("https://tower-track-server.vercel.app/create-payment-intent", {
+      const { data: clientSecret } = await axiosSecure.post("/create-payment-intent", {
         amount: rent,
         email: data.userEmail,
       });
@@ -109,7 +110,7 @@ const MakePaymentDetails = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(`https://tower-track-server.vercel.app/users/role/${user.email}`);
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
       return res.data;
     },
   });

@@ -7,7 +7,8 @@ import { FaTrashAlt, FaUsers } from "react-icons/fa";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import axios from "axios";
+//import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure";
 
 const ManageMembers = () => {
   const { user, loading } = useContext(AuthContext);
@@ -32,8 +33,8 @@ const ManageMembers = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      const res = await axiosSecure.get(
+        `/users/role/${user.email}`
       );
       return res.data;
     },
@@ -48,15 +49,15 @@ const ManageMembers = () => {
   } = useQuery({
     queryKey: ["members"],
     queryFn: async () => {
-      const res = await axios.get("https://tower-track-server.vercel.app/users");
+      const res = await axiosSecure.get("/users");
       return res.data?.filter((u) => u?.role === "member");
     },
   });
 
   const mutation = useMutation({
     mutationFn: async (email) => {
-      const res = await axios.patch(
-        `https://tower-track-server.vercel.app/users/${email}`,
+      const res = await axiosSecure.patch(
+        `/users/${email}`,
         { role: "user" }
       );
       return res.data;

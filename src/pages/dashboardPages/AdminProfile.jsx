@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure"
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -27,8 +28,8 @@ const AdminProfile = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      const res = await axiosSecure.get(
+        `/users/role/${user.email}`
       );
       return res.data;
     },
@@ -55,8 +56,8 @@ const AdminProfile = () => {
   } = useQuery({
     queryKey: ["agreements"],
     queryFn: async () => {
-      const res = await axios.get(
-        "https://tower-track-server.vercel.app/agreements"
+      const res = await axiosSecure.get(
+        "/agreements"
       );
       return res.data;
     },
@@ -69,8 +70,8 @@ const AdminProfile = () => {
   } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await axios.get(
-        "https://tower-track-server.vercel.app/users"
+      const res = await axiosSecure.get(
+        "/users"
       );
       return res.data;
     },

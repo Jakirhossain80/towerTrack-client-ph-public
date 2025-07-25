@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+//import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure";
 import Loading from "../../utils/Loading";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -20,8 +21,8 @@ const MakePayment = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      const res = await axiosSecure.get(
+        `/users/role/${user.email}`
       );
       return res.data;
     },
@@ -34,8 +35,8 @@ const MakePayment = () => {
   } = useQuery({
     queryKey: ["agreement", user?.email],
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/agreements/member/${user?.email}`
+      const res = await axiosSecure.get(
+        `/agreements/member/${user?.email}`
       );
       return res.data;
     },

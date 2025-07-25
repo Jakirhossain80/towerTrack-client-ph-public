@@ -2,7 +2,8 @@ import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+//import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure";
 import Swal from "sweetalert2";
 import { MdAnnouncement } from "react-icons/md";
 import AOS from "aos";
@@ -16,8 +17,8 @@ const MakeAnnouncement = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      const res = await axiosSecure.get(
+        `/users/role/${user.email}`
       );
       return res.data;
     },
@@ -36,7 +37,7 @@ const MakeAnnouncement = () => {
 
   const mutation = useMutation({
     mutationFn: async (formData) => {
-      const res = await axios.post("https://tower-track-server.vercel.app/announcements", formData);
+      const res = await axiosSecure.post("/announcements", formData);
       return res.data;
     },
     onSuccess: () => {

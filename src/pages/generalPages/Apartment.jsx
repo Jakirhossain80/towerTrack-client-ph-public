@@ -9,6 +9,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Swal from "sweetalert2";
 import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure";
 import Loading from "../../utils/Loading";
 
 const Apartment = () => {
@@ -33,8 +34,8 @@ const Apartment = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      const res = await axiosSecure.get(
+        `/users/role/${user.email}`
       );
       return res.data;
     },
@@ -54,8 +55,8 @@ const Apartment = () => {
 
   useEffect(() => {
     if (user?.email) {
-      axios
-        .get(`https://tower-track-server.vercel.app/agreements?email=${user.email}`)
+      axiosSecure
+        .get(`/agreements?email=${user.email}`)
         .then((res) => {
           if (res.data?.hasAgreement) setHasApplied(true);
         })
@@ -65,7 +66,7 @@ const Apartment = () => {
 
   const mutation = useMutation({
     mutationFn: async (data) => {
-      const res = await axios.post(`https://tower-track-server.vercel.app/agreements`, data);
+      const res = await axiosSecure.post(`/agreements`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -110,9 +111,10 @@ const Apartment = () => {
     mutation.mutate(agreementData);
   };
 
-  const filteredApartments = apartments?.filter(
-    (apt) => apt.rent >= minRent && apt.rent <= maxRent
-  );
+ const filteredApartments = Array.isArray(apartments)
+  ? apartments.filter((apt) => apt.rent >= minRent && apt.rent <= maxRent)
+  : [];
+
 
   const totalPages = Math.ceil(filteredApartments?.length / itemsPerPage);
   const startIdx = (currentPage - 1) * itemsPerPage;

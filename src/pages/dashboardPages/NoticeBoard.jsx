@@ -3,6 +3,7 @@ import { useContext, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../provider/AuthProvider";
 import axios from "axios";
+import axiosSecure from "../../hooks/axiosSecure";
 import Loading from "../../utils/Loading";
 import Swal from "sweetalert2";
 import { FaExclamationTriangle } from "react-icons/fa";
@@ -22,8 +23,8 @@ const NoticeBoard = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      const res = await axiosSecure.get(
+        `/users/role/${user.email}`
       );
       return res.data;
     },
@@ -39,7 +40,7 @@ const NoticeBoard = () => {
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axios.get(
-        `https://tower-track-server.vercel.app/notices/user/${user.email}`
+        `https://tower-track-server.vercel.app/notices/users/${user.email}`
       );
       return res.data;
     },
