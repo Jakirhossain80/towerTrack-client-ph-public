@@ -1,30 +1,22 @@
 // src/hooks/useUserRole.js
 import { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
+import axiosSecure from "./axiosSecure"; // ✅ Uses shared secure axios instance
 import { AuthContext } from "../provider/AuthProvider";
-import axios from "axios";
-
-const axiosSecure = axios.create({
-  baseURL: "https://tower-track-server.vercel.app",
-});
 
 const useUserRole = () => {
   const { user, loading } = useContext(AuthContext);
 
-  const {
-    data: roleData = null,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: roleData, isLoading } = useQuery({
     queryKey: ["userRole", user?.email],
-    enabled: !loading && !!user?.email, // Prevents query when email is not ready
+    enabled: !!user?.email && !loading, // Only run when user is ready
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/role/${user.email}`);
-      return res.data;
+      return res.data; // { role: "user" | "member" | "admin" }
     },
   });
 
-  return { roleData, isLoading, isError };
+  return { roleData, isLoading };
 };
 
 export default useUserRole;
