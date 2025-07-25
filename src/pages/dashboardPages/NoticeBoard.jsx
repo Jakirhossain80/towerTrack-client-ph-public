@@ -39,8 +39,8 @@ const NoticeBoard = () => {
     queryKey: ["userNotices", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/notices/users/${user.email}`
+      const res = await axiosSecure.get(
+        `/notices/users/${user.email}`
       );
       return res.data;
     },
