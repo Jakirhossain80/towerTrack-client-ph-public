@@ -13,6 +13,7 @@
   padding-inline: 1rem;
 }
 
+
 @theme {
   --font-poppins: Poppins, sans-serif;
   --font-inter: "Inter", sans-serif;
@@ -30,6 +31,7 @@
   @apply !bg-lime-500
 
 }
+
 
 
 html {
