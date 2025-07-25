@@ -44,7 +44,7 @@ const AuthProvider = ({ children }) => {
         await issueToken(currentUser);
       }
 
-      setLoading(false);
+       setTimeout(() => setLoading(false), 100);
     });
 
     return () => unsubscribe();

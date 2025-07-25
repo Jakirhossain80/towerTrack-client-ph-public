@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../provider/AuthProvider";
-import axios from "axios";
+import axiosSecure from "../hooks/axiosSecure";
 import Loading from "../utils/Loading";
 
 const MemberRoute = ({ children }) => {
@@ -13,8 +13,8 @@ const MemberRoute = ({ children }) => {
     queryKey: ["userRole", user?.email],
     enabled: !!user?.email && !loading,
     queryFn: async () => {
-      const res = await axios.get(
-        `https://tower-track-server.vercel.app/users/role/${user.email}`
+      const res = await axiosSecure.get(
+        `/users/role/${user.email}`
       );
       return res.data;
     },
