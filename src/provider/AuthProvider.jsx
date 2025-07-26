@@ -17,15 +17,7 @@ import app from "../firebase.config";
 // Create context
 export const AuthContext = createContext();
 
-const issueToken = async (user) => {
-  if (user?.email) {
-    await axios.post(
-      `${import.meta.env.VITE_API_URL}/jwt`,
-      { email: user.email },
-      { withCredentials: true } // send cookie
-    );
-  }
-};
+
 
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
@@ -66,6 +58,16 @@ const AuthProvider = ({ children }) => {
     setLoading(true);
     return signInWithPopup(auth, googleProvider);
   };
+
+  const issueToken = async (user) => {
+  if (user?.email) {
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/jwt`,
+      { email: user.email },
+      { withCredentials: true } // send cookie
+    );
+  }
+};
 
   const logout = async () => {
     setLoading(true);
