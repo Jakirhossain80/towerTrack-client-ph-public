@@ -1,4 +1,4 @@
-# 🏢 Project Name: TowerTrack
+Project Name: TowerTrack
 
 **TowerTrack** is a full-featured MERN stack web application built for **residential building management**. It empowers Admins to manage apartments, Members to handle rent payments and maintenance requests, and provides a smooth experience for all users with role-based dashboards, rent tracking, and real-time notices.
 
@@ -6,8 +6,8 @@
 
 ## 🚀 Live Demo
 
-🔗 [Live Site](https://your-live-deployment-url.com)  
-🔧 Backend API: [Vercel Backend URL](https://your-backend-api-url.com)
+🔗 [Live Site](https://towertrack-ph-assestwelve.netlify.app)  
+🔧 Backend API: [Vercel Backend URL](https://tower-track-server.vercel.app)
 
 ---
 
@@ -59,8 +59,8 @@ TowerTrack streamlines apartment management through modern technologies by offer
 - CORS
 
 ### ☁️ Deployment
-- **Frontend:** [Netlify](https://www.netlify.com/)
-- **Backend/API:** [Vercel](https://vercel.com/)
+- **Frontend:** [Netlify](https://towertrack-ph-assestwelve.netlify.app)
+- **Backend/API:** [Vercel](https://tower-track-server.vercel.app)
 
 ---
 
