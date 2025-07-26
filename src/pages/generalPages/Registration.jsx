@@ -8,7 +8,7 @@ import LottieAnimation from '../../utils/LottieAnimation';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import axios from 'axios';
-
+import Loading from '../../utils/Loading'; // ✅ Added import
 
 const Registration = () => {
   const { createUser } = useContext(AuthContext);
@@ -21,6 +21,7 @@ const Registration = () => {
     password: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false); // ✅ Loading state for form
   const [passwordError, setPasswordError] = useState('');
   const { name, email, photoURL, password } = formData;
 
@@ -73,6 +74,8 @@ const Registration = () => {
     if (!validatePassword(password)) return;
 
     try {
+      setIsSubmitting(true); // ✅ Start loading
+
       const result = await createUser(email, password, name);
       const user = result.user;
 
@@ -81,7 +84,6 @@ const Registration = () => {
         photoURL: photoURL,
       });
 
-      // Save user to MongoDB users collection
       const saveUser = {
         name,
         email,
@@ -101,8 +103,12 @@ const Registration = () => {
       navigate('/');
     } catch (error) {
       Swal.fire('Error', error.message, 'error');
+    } finally {
+      setIsSubmitting(false); // ✅ Stop loading
     }
   };
+
+  if (isSubmitting) return <Loading />; // ✅ Show loading during submission
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center px-4 transition-all duration-500">
