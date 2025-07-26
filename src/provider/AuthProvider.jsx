@@ -37,6 +37,8 @@ const AuthProvider = ({ children }) => {
         setUser(currentUser); // ✅ set user only after token ready
       } catch (err) {
         console.error("🔒 Token issue failed", err);
+        console.log("📛 JWT token not issued for user:", currentUser?.email);
+
         setUser(null); // fallback
       }
     } else {

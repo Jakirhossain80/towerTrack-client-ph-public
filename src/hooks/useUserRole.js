@@ -25,6 +25,8 @@ const useUserRole = () => {
   // Optional: Log if needed
   if (isError) {
     console.error("🔴 Role fetch error:", error?.message || error);
+    console.log("📛 Failed to fetch role for user:", user?.email);
+
   }
 
   return { roleData, isLoading, isError };
