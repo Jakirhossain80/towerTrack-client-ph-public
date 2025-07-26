@@ -46,8 +46,8 @@ const ManageCoupons = () => {
     mutationFn: async (coupon) => {
       const method = editData ? "patch" : "post";
       const url = editData
-        ? `https://tower-track-server.vercel.app/coupons/${editData._id}`
-        : "https://tower-track-server.vercel.app/coupons";
+        ? `${import.meta.env.VITE_API_URL}/coupons/${editData._id}`
+        : `${import.meta.env.VITE_API_URL}/coupons`;
       return axiosSecure[method](url, coupon);
     },
     onSuccess: () => {

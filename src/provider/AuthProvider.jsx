@@ -20,7 +20,7 @@ export const AuthContext = createContext();
 const issueToken = async (user) => {
   if (user?.email) {
     await axios.post(
-      "https://tower-track-server.vercel.app/jwt",
+      `${import.meta.env.VITE_API_URL}/jwt`,
       { email: user.email },
       { withCredentials: true } // send cookie
     );
@@ -72,7 +72,7 @@ const AuthProvider = ({ children }) => {
     try {
       await signOut(auth); // Firebase sign-out
       await axios.post(
-        "https://tower-track-server.vercel.app/logout",
+        `${import.meta.env.VITE_API_URL}/logout`,
         {},
         { withCredentials: true } // send cookie for clearing
       );

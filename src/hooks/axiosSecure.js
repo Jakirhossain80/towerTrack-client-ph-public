@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const axiosSecure = axios.create({
-  baseURL: "https://tower-track-server.vercel.app", // match your API
+  baseURL: `${import.meta.env.VITE_API_URL}`, // match your API
   withCredentials: true, // 🚨 send cookies
 });
 

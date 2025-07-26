@@ -43,7 +43,7 @@ const AdminProfile = () => {
     queryKey: ["apartments"],
     queryFn: async () => {
       const res = await axios.get(
-        "https://tower-track-server.vercel.app/apartments"
+        `${import.meta.env.VITE_API_URL}/apartments`
       );
       return res.data;
     },

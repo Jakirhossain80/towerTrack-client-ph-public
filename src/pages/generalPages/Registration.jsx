@@ -88,7 +88,7 @@ const Registration = () => {
         role: "user",
       };
 
-      await axios.post("https://tower-track-server.vercel.app/users", saveUser);
+      await axios.post(`${import.meta.env.VITE_API_URL}/users`, saveUser);
 
       Swal.fire({
         icon: 'success',

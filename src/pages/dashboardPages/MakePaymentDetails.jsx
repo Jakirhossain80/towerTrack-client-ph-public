@@ -121,7 +121,7 @@ const MakePaymentDetails = () => {
 
   const handleApplyCoupon = async () => {
     try {
-      const res = await axios.post("https://tower-track-server.vercel.app/validate-coupon", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/validate-coupon`, {
         code: coupon,
       });
       const { valid, discountPercentage } = res.data;

@@ -31,7 +31,7 @@ const Login = () => {
         `/users/${email}`
       );
       if (!res.data.exists) {
-        await axios.post("https://tower-track-server.vercel.app/users", {
+        await axios.post(`${import.meta.env.VITE_API_URL}/users`, {
           email,
           name,
           role: "user",
