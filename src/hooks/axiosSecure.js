@@ -2,22 +2,21 @@
 import axios from "axios";
 
 const axiosSecure = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}`, // match your API
-  withCredentials: true, // 🚨 send cookies
+  baseURL: `${import.meta.env.VITE_API_URL}`, // 📦 API from .env
+  withCredentials: true, // 🚨 Send cookies (for JWT)
 });
 
-// Optional global error handler
+// 🛡️ Optional global response error handler
 axiosSecure.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401 || err.response?.status === 403) {
-      // Optional: redirect to login
-      window.location.href = "/";
+      console.warn("🔒 Auth error:", err?.response?.data?.message || err.message);
+      // ❗ Avoid redirecting here. Use route-level guards for navigation.
+      // Optionally show toast, modal, or custom error UI.
     }
     return Promise.reject(err);
   }
 );
 
 export default axiosSecure;
-
-
