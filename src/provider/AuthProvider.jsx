@@ -28,20 +28,37 @@ const AuthProvider = ({ children }) => {
 
   // 🔄 Firebase auth state listener (no JWT logic)
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setLoading(true);
-      setUser(currentUser);
-      // ✅ Issue JWT token via HTTP-only cookie
-      if (currentUser) {
-        await issueToken(currentUser);
+  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    setLoading(true);
+
+    if (currentUser?.email) {
+      try {
+        await issueToken(currentUser); // ✅ wait for token to be set
+        setUser(currentUser); // ✅ set user only after token ready
+      } catch (err) {
+        console.error("🔒 Token issue failed", err);
+        setUser(null); // fallback
       }
+    } else {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/logout`,
+        {},
+        { withCredentials: true }
+      );
+      setUser(null);
+    }
 
-       setTimeout(() => setLoading(false), 100);
-    });
+    setLoading(false); // ✅ safe to continue rendering
+  });
 
-    return () => unsubscribe();
-  }, []);
+  return () => unsubscribe();
+}, []);
 
+
+  
+  
+  
+  
   const createUser = async (email, password, name) => {
     setLoading(true);
     const result = await createUserWithEmailAndPassword(auth, email, password);
