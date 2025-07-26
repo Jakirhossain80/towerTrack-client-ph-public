@@ -22,7 +22,7 @@ const useUserRole = () => {
     retry: false, // 🔒 Prevents auto-retry loop if 401
   });
 
-  // Optional: Log if needed
+  // Optional: Log if needed ok
   if (isError) {
     console.error("🔴 Role fetch error:", error?.message || error);
     console.log("📛 Failed to fetch role for user:", user?.email);
@@ -33,4 +33,5 @@ const useUserRole = () => {
 };
 
 export default useUserRole;
+
 
