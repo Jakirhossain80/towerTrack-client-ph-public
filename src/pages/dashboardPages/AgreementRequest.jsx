@@ -29,7 +29,7 @@ const AgreementRequest = () => {
     },
   });
 
-  // ✅ Fetch pending agreements
+  // ✅ Fetch pending agreements Ok
   const {
     data: requests = [],
     isLoading: loadingRequests,

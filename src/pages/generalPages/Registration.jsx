@@ -74,7 +74,7 @@ const Registration = () => {
     if (!validatePassword(password)) return;
 
     try {
-      setIsSubmitting(true); // ✅ Start loading
+      setIsSubmitting(true); // ✅ Start loading Ok
 
       const result = await createUser(email, password, name);
       const user = result.user;
