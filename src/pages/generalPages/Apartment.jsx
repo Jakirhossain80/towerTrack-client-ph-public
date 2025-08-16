@@ -136,7 +136,7 @@ const Apartment = () => {
     );
 
   return (
-    <div className="px-4 py-12 bg-gray-50 dark:bg-gray-900 transition-all duration-500 min-h-screen">
+    <div className="px-4 py-10 bg-gray-50 dark:bg-gray-900 transition-all duration-500 min-h-screen">
       <h1
         data-aos="fade-up"
         className="text-3xl md:text-4xl font-poppins font-semibold text-center mb-10 text-gray-800 dark:text-gray-200"
