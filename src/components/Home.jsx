@@ -5,6 +5,7 @@ import Coupons from "./Coupons";
 import LocationAndDirections from "./LocationAndDirections";
 import KeyFeatures from "./KeyFeatures";
 import ResidentBenefits from "./ResidentBenefits";
+import Testimonials from "./Testimonials";
 
 
 
@@ -30,6 +31,9 @@ const Home = () => {
       </div>
       <div className="mb-5">
         <ResidentBenefits />
+      </div>
+      <div className="mb-5">
+        <Testimonials />
       </div>
       
     </>
