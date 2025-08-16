@@ -13,18 +13,6 @@ import {
   FiActivity,
 } from "react-icons/fi";
 
-/**
- * AboutUs (TowerTrack)
- * - Fonts: Poppins (headings), Inter (body)
- * - Colors: Primary lime-500/600, Accent emerald-400/500
- * - Background: gray-50 (light) / gray-900 (dark)
- * - Text: gray-800 (light) / gray-200 (dark)
- * - Transitions: transition-all duration-500
- *
- * Props (optional):
- * - team: [{ id, name, role, photo }]
- * - className: string
- */
 
 const defaultTeam = [
   {
@@ -83,7 +71,7 @@ const AboutUs = ({ team = defaultTeam, className = "" }) => {
       className={`w-full bg-gray-50 dark:bg-gray-900 transition-all duration-500 ${className}`}
       aria-labelledby="aboutus-heading"
     >
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-10 sm:pt-12 md:pt-20 pb-12 sm:pb-16 md:pb-20">
+      <div className="max-w-[1980px] mx-auto px-6 py-10">
         {/* Hero */}
         <header className="text-center" data-aos="fade-up">
           <span className="inline-flex items-center gap-2 text-emerald-500 font-inter text-sm sm:text-base">
