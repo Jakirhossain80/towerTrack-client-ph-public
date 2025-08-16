@@ -7,6 +7,7 @@ import KeyFeatures from "./KeyFeatures";
 import ResidentBenefits from "./ResidentBenefits";
 import Testimonials from "./Testimonials";
 import Pricing from "./Pricing";
+import Newsletter from "./Newsletter";
 
 
 
@@ -38,6 +39,9 @@ const Home = () => {
       </div>
       <div className="mb-5">
         <Testimonials />
+      </div>
+      <div className="mb-5">
+        <Newsletter />
       </div>
       
     </>
