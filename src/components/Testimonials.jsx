@@ -2,7 +2,9 @@
 import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { FiStar, FiQuote } from "react-icons/fi";
+import { FiStar } from "react-icons/fi";
+import { FaQuoteLeft } from "react-icons/fa";
+
 
 
 const defaultTestimonials = [
@@ -117,7 +119,7 @@ const TestimonialCard = ({ name, role, avatar, quote, rating = 5 }) => {
           </p>
         </div>
         <div className="ml-auto text-lime-600/70">
-          <FiQuote className="text-2xl" />
+          <FaQuoteLeft className="text-2xl" />
         </div>
       </div>
 
