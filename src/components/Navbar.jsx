@@ -51,28 +51,31 @@ const Navbar = () => {
         >
           Apartment
         </NavLink>
-        
-        <NavLink
-          to="/communities"
-          className={({ isActive }) => linkClasses(isActive)}
-        >
-          Communities
-        </NavLink>
-        <NavLink
-          to="/aboutUs"
-          className={({ isActive }) => linkClasses(isActive)}
-        >
-          AboutUs
-        </NavLink>
+
+        {/* Only show if logged in */}
+        {user && (
+          <NavLink
+            to="/communities"
+            className={({ isActive }) => linkClasses(isActive)}
+          >
+            Communities
+          </NavLink>
+        )}
+        {user && (
+          <NavLink
+            to="/aboutUs"
+            className={({ isActive }) => linkClasses(isActive)}
+          >
+            AboutUs
+          </NavLink>
+        )}
+
         <NavLink
           to="/contactUs"
           className={({ isActive }) => linkClasses(isActive)}
         >
           ContactUs
         </NavLink>
-      
-      
-      
       </div>
 
       {/* Right: Auth, Theme, User Menu */}
@@ -160,8 +163,8 @@ const Navbar = () => {
           {[
             ["/", "Home"],
             ["/apartment", "Apartment"],
-            ["/communities", "Communities"],
-            ["/aboutUs", "AboutUs"],
+            ...(user ? [["/communities", "Communities"]] : []),
+            ...(user ? [["/aboutUs", "AboutUs"]] : []),
             ["/contactUs", "ContactUs"],
           ].map(([path, label]) => (
             <NavLink

@@ -66,7 +66,7 @@ const Newsletter = ({
       className={`w-full bg-gray-50 dark:bg-gray-900 transition-all duration-500 ${className}`}
       aria-labelledby="newsletter-heading"
     >
-      <div className="max-w-[1980px] mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Header */}
         <header className="text-center" data-aos="fade-up">
           <span className="inline-flex items-center gap-2 text-emerald-500 font-inter text-sm sm:text-base">

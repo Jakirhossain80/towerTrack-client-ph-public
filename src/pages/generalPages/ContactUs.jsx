@@ -215,7 +215,7 @@ const ContactUs = ({ onSubmit, showMap = true, className = "" }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-70 text-white font-inter font-medium transition-all duration-500"
+                  className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-70 text-white font-inter font-medium transition-all duration-500 cursor-pointer"
                 >
                   <FiSend className={loading ? "animate-pulse" : ""} />
                   {loading ? "Sending..." : "Submit"}

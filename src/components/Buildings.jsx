@@ -105,7 +105,7 @@ const Buildings = () => {
                   <button
                     type="button"
                     onClick={() => setSelected(bld)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-inter text-sm font-medium transition-all duration-500"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-inter text-sm font-medium transition-all duration-500 cursor-pointer"
                     aria-label={`See more about ${bld?.title ?? "building"}`}
                   >
                     <FiExternalLink />
@@ -171,7 +171,7 @@ const Buildings = () => {
               <button
                 type="button"
                 onClick={closeModal}
-                className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-lime-600 text-lime-600 hover:bg-lime-50 dark:hover:bg-gray-700 font-inter text-sm font-medium transition-all duration-500"
+                className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-lime-600 text-lime-600 hover:bg-lime-50 dark:hover:bg-gray-700 font-inter text-sm font-medium transition-all duration-500 cursor-pointer"
               >
                 Close
               </button>

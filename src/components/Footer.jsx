@@ -1,5 +1,4 @@
-// src/components/Footer.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { NavLink, Link } from "react-router-dom";
@@ -10,8 +9,11 @@ import {
   FaTwitter,
   FaGithub,
 } from "react-icons/fa";
+import { AuthContext } from "../provider/AuthProvider";
 
 const Footer = () => {
+  const { user } = useContext(AuthContext);
+
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
   }, []);
@@ -51,17 +53,22 @@ const Footer = () => {
             <NavLink to="/apartment" className={navLinkClass}>
               Apartment
             </NavLink>
-            <NavLink to="/communities" className={navLinkClass}>
-              Communities
-            </NavLink>
-            <NavLink to="/aboutUs" className={navLinkClass}>
-              AboutUs
-            </NavLink>
+
+            {/* ✅ Show these only if user is logged in */}
+            {user && (
+              <>
+                <NavLink to="/communities" className={navLinkClass}>
+                  Communities
+                </NavLink>
+                <NavLink to="/aboutUs" className={navLinkClass}>
+                  AboutUs
+                </NavLink>
+              </>
+            )}
+
             <NavLink to="/contactUs" className={navLinkClass}>
               ContactUs
             </NavLink>
-          
-          
           </nav>
         </div>
 
