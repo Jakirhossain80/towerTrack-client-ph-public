@@ -1,3 +1,4 @@
+// src/pages/Apartment/Apartment.jsx
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +22,7 @@ const Apartment = () => {
   const [minRent, setMinRent] = useState(0);
   const [maxRent, setMaxRent] = useState(Infinity);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState("none"); // ⬅️ NEW: sorting state
   const itemsPerPage = 6;
 
   useEffect(() => {
@@ -34,9 +36,7 @@ const Apartment = () => {
     queryKey: ["userRole", user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/users/role/${user.email}`
-      );
+      const res = await axiosSecure.get(`/users/role/${user.email}`);
       return res.data;
     },
   });
@@ -111,14 +111,28 @@ const Apartment = () => {
     mutation.mutate(agreementData);
   };
 
- const filteredApartments = Array.isArray(apartments)
-  ? apartments.filter((apt) => apt.rent >= minRent && apt.rent <= maxRent)
-  : [];
+  // 🔍 Filter by rent range (unchanged)
+  const filteredApartments = Array.isArray(apartments)
+    ? apartments.filter(
+        (apt) =>
+          Number(apt?.rent ?? 0) >= Number(minRent ?? 0) &&
+          Number(apt?.rent ?? 0) <= (Number.isFinite(maxRent) ? Number(maxRent) : Infinity)
+      )
+    : [];
 
+  // 🔢 NEW: Sort by rent (asc/desc) without altering layout/structure
+  const sortedApartments =
+    sortOrder === "none"
+      ? filteredApartments
+      : [...filteredApartments].sort((a, b) => {
+          const ar = Number(a?.rent ?? 0);
+          const br = Number(b?.rent ?? 0);
+          return sortOrder === "asc" ? ar - br : br - ar;
+        });
 
-  const totalPages = Math.ceil(filteredApartments?.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedApartments?.length / itemsPerPage);
   const startIdx = (currentPage - 1) * itemsPerPage;
-  const paginatedApartments = filteredApartments?.slice(
+  const paginatedApartments = sortedApartments?.slice(
     startIdx,
     startIdx + itemsPerPage
   );
@@ -128,6 +142,11 @@ const Apartment = () => {
       setCurrentPage(pageNum);
     }
   };
+
+  // Reset to first page when filters/sort change (keeps UX consistent)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [minRent, maxRent, sortOrder]);
 
   if (loading || isLoading || roleLoading) return <Loading />;
   if (isError)
@@ -144,7 +163,7 @@ const Apartment = () => {
         Available Apartments
       </h1>
 
-      {/* 🔍 Rent Range Filter */}
+      {/* 🔍 Rent Range Filter + ⬇️ NEW: Sort Control (keeps same row/layout) */}
       <div className="max-w-3xl mx-auto mb-10 flex flex-col sm:flex-row items-center gap-4">
         <input
           type="number"
@@ -169,6 +188,18 @@ const Apartment = () => {
         >
           Clear Filter
         </button>
+
+        {/* NEW: Sort by Rent */}
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+          className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-800 dark:text-gray-200 w-full sm:w-auto"
+          aria-label="Sort apartments by rent"
+        >
+          <option value="none">Sort: Default</option>
+          <option value="asc">Sort: Rent Low → High</option>
+          <option value="desc">Sort: Rent High → Low</option>
+        </select>
       </div>
 
       <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -186,7 +217,9 @@ const Apartment = () => {
             <div className="p-6 space-y-2 text-gray-800 dark:text-gray-200 font-inter">
               <div className="flex items-center gap-2">
                 <MdApartment className="text-xl text-emerald-500" />
-                <span className="text-lg font-medium">Apartment No: {apt.apartmentNo}</span>
+                <span className="text-lg font-medium">
+                  Apartment No: {apt.apartmentNo}
+                </span>
               </div>
               <p className="flex items-center gap-2">
                 <LiaWarehouseSolid className="text-green-500" />
