@@ -23,6 +23,7 @@ import PaymentHistory from "../pages/dashboardPages/PaymentHistory";
 import NoticeBoard from "../pages/dashboardPages/NoticeBoard";
 import UserOrMemberRoute from "../provider/UserOrMemberRoute";
 import Communities from "../pages/generalPages/Communities";
+import Blogs from "../pages/generalPages/Blogs";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path: "/communities",
         element: <Communities/>,
+      },
+      {
+        path: "/blogs",
+        element: <Blogs/>,
       },
 
       {

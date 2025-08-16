@@ -16,30 +16,6 @@ import {
   FiMapPin,
 } from "react-icons/fi";
 
-/**
- * Communities (TowerTrack)
- * - Fonts: Poppins (headings), Inter (body)
- * - Colors: Primary lime-500/600, Accent emerald-400/500
- * - Dark/Light supported via Tailwind `dark:` classes
- * - AOS reveal animations
- * - Responsive with Tailwind (Mobile → Desktop)
- *
- * Props:
- *  - communities: Array of community objects to display
- *  - onJoin: (communityId) => void   // optional callback for "Join Community"
- *  - className: string               // optional extra wrapper classes
- *
- * Data shape:
- * {
- *   id: string|number,
- *   name: string,
- *   location: string,
- *   households: number,
- *   amenities: string[],
- *   highlight: string,
- *   cover: string (image url),
- * }
- */
 
 const defaultCommunities = [
   {
@@ -82,7 +58,7 @@ const Communities = ({ communities = defaultCommunities, onJoin, className = "" 
       aria-labelledby="communities-heading"
     >
       {/* Container */}
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-12 sm:py-16 md:py-20">
+      <div className="max-w-[1980px] mx-auto px-6 py-10">
         {/* Header */}
         <div className="text-center mb-10 sm:mb-12 md:mb-16" data-aos="fade-up">
           <span className="inline-flex items-center gap-2 text-emerald-500 font-inter text-sm sm:text-base">
