@@ -4,6 +4,7 @@ import AboutTheBuilding from "./AboutTheBuilding";
 import Coupons from "./Coupons";
 import LocationAndDirections from "./LocationAndDirections";
 import KeyFeatures from "./KeyFeatures";
+import ResidentBenefits from "./ResidentBenefits";
 
 
 
@@ -26,6 +27,9 @@ const Home = () => {
       </div>
       <div className="mb-5">
         <KeyFeatures />
+      </div>
+      <div className="mb-5">
+        <ResidentBenefits />
       </div>
       
     </>
