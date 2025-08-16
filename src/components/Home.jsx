@@ -14,13 +14,13 @@ const Home = () => {
       <div className="my-5">
         <BannerSlider />
       </div>
-      <div className="my-10">
+      <div className="mb-5">
         <AboutTheBuilding />
       </div>
-      <div className="mb-10">
+      <div className="mb-5">
         <Coupons />
       </div>
-      <div className="mb-10">
+      <div className="mb-5">
         <LocationAndDirections />
       </div>
       
