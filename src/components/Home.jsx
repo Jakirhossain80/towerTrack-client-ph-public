@@ -3,6 +3,7 @@ import BannerSlider from './BannerSlider'
 import AboutTheBuilding from "./AboutTheBuilding";
 import Coupons from "./Coupons";
 import LocationAndDirections from "./LocationAndDirections";
+import KeyFeatures from "./KeyFeatures";
 
 
 
@@ -22,6 +23,9 @@ const Home = () => {
       </div>
       <div className="mb-5">
         <LocationAndDirections />
+      </div>
+      <div className="mb-5">
+        <KeyFeatures />
       </div>
       
     </>
