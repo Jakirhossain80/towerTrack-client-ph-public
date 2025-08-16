@@ -8,6 +8,8 @@ import { FiHome, FiExternalLink, FiX } from "react-icons/fi";
 import axios from "axios";
 import Loading from "../utils/Loading";
 
+const API_BASE = import.meta?.env?.VITE_API_URL || "";
+
 const Buildings = () => {
   const [selected, setSelected] = useState(null);
 
@@ -18,8 +20,11 @@ const Buildings = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["buildings"],
     queryFn: async () => {
-      const res = await axios.get("/buildings"); // ⬅️ axios used here
-      return res?.data ?? [];
+      const res = await axios.get(`${API_BASE}/buildings`, {
+        withCredentials: true, // keep if you rely on cookies; otherwise harmless
+      });
+      // ✅ Always return an array
+      return Array.isArray(res?.data) ? res.data : [];
     },
     staleTime: 60 * 1000,
   });
@@ -73,7 +78,7 @@ const Buildings = () => {
           data-aos="fade-up"
           data-aos-delay="100"
         >
-          {data?.map((bld, idx) => (
+          {(Array.isArray(data) ? data : []).map((bld, idx) => (
             <article
               key={bld?._id ?? idx}
               className="group rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-500 hover:shadow-lg"
