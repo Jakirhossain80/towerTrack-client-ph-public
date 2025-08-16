@@ -35,7 +35,7 @@ const Coupons = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <section className="bg-gray-50 dark:bg-slate-800 py-16 px-4 sm:px-6 lg:px-20 transition-all duration-500">
+    <section className="bg-gray-50 dark:bg-slate-800 py-16 transition-all duration-500">
       <div className="mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold font-poppins text-gray-800 dark:text-gray-200 mb-2">

@@ -26,7 +26,7 @@ const Footer = () => {
       className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-inter border-t border-gray-200 dark:border-gray-700 transition-all duration-500"
       data-aos="zoom-in"
     >
-      <div className="max-[1600px] mx-auto px-2 py-16 grid justify-center items-center gap-8 sm:grid-cols-2 md:grid-cols-3">
+      <div className="max-w-[1550px] mx-auto px-8 py-16 grid justify-center items-center gap-8 sm:grid-cols-2 md:grid-cols-3">
         {/* Left: Logo & Tagline */}
         <div className="text-center md:text-left space-y-2">
           <Link
@@ -59,7 +59,7 @@ const Footer = () => {
           <h4 className="text-md font-semibold font-poppins">
             Connect With Us
           </h4>
-          <div className="flex justify-center md:justify-start space-x-4 text-xl">
+          <div className="flex justify-center md:justify-end space-x-4 text-xl">
             <a
               href="https://facebook.com"
               target="_blank"
