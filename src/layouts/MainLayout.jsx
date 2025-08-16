@@ -7,13 +7,13 @@ import ScrollToTop from "../utils/ScrollToTop";
 const MainLayout = () => {
   return (
     <>
-      <div className="container">
-        <header>
-          <nav className="py-10">
-            <Navbar />
-          </nav>
-        </header>
+      <header>
+        <nav className="py-10">
+          <Navbar />
+        </nav>
+      </header>
 
+      <div className="container">
         <main className="pt-10">
           <Outlet></Outlet>
         </main>
