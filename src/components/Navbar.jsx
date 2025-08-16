@@ -59,10 +59,10 @@ const Navbar = () => {
           Communities
         </NavLink>
         <NavLink
-          to="/blogs"
+          to="/aboutUs"
           className={({ isActive }) => linkClasses(isActive)}
         >
-          Blogs
+          AboutUs
         </NavLink>
       
       
@@ -155,7 +155,7 @@ const Navbar = () => {
             ["/", "Home"],
             ["/apartment", "Apartment"],
             ["/communities", "Communities"],
-            ["/blogs", "Blogs"],
+            ["/aboutUs", "AboutUs"],
           ].map(([path, label]) => (
             <NavLink
               key={path}
