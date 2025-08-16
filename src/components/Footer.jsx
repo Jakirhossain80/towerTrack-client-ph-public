@@ -26,7 +26,7 @@ const Footer = () => {
       className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-inter border-t border-gray-200 dark:border-gray-700 transition-all duration-500"
       data-aos="zoom-in"
     >
-      <div className="max-w-[1980px] mx-auto px-20 py-16 grid justify-center items-center gap-8 sm:grid-cols-2 md:grid-cols-3">
+      <div className="max-w-[1780px] mx-auto px-20 py-16 grid justify-center items-center gap-8 sm:grid-cols-2 md:grid-cols-3">
         {/* Left: Logo & Tagline */}
         <div className="text-center md:text-left space-y-2">
           <Link
