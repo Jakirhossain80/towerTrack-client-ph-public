@@ -22,6 +22,7 @@ import MakePaymentDetails from "../pages/dashboardPages/MakePaymentDetails";
 import PaymentHistory from "../pages/dashboardPages/PaymentHistory";
 import NoticeBoard from "../pages/dashboardPages/NoticeBoard";
 import UserOrMemberRoute from "../provider/UserOrMemberRoute";
+import Communities from "../pages/generalPages/Communities";
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ export const router = createBrowserRouter([
       {
         path: "/apartment",
         Component: Apartment,
+      },
+      {
+        path: "/communities",
+        element: <Communities/>,
       },
 
       {

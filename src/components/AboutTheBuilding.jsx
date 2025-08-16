@@ -99,7 +99,7 @@ const AboutTheBuilding = () => {
 
           {/* Right: Features List */}
           <div
-            className="grid gap-6 sm:grid-cols-2 items-start"
+            className="grid gap-4 sm:grid-cols-2 items-start"
             data-aos="slide-left"
           >
             {features.map((feature, idx) => (
