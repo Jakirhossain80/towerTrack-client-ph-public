@@ -57,6 +57,9 @@ const Footer = () => {
             <NavLink to="/aboutUs" className={navLinkClass}>
               AboutUs
             </NavLink>
+            <NavLink to="/contactUs" className={navLinkClass}>
+              ContactUs
+            </NavLink>
           
           
           </nav>

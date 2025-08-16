@@ -24,6 +24,7 @@ import NoticeBoard from "../pages/dashboardPages/NoticeBoard";
 import UserOrMemberRoute from "../provider/UserOrMemberRoute";
 import Communities from "../pages/generalPages/Communities";
 import AboutUs from "../pages/generalPages/AboutUs";
+import ContactUs from "../pages/generalPages/ContactUs";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path: "/aboutUs",
         element: <AboutUs/>,
+      },
+      {
+        path: "/contactUs",
+        element: <ContactUs/>,
       },
 
       {
