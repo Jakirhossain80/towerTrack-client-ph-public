@@ -73,7 +73,7 @@ const AboutTheBuilding = () => {
 
   return (
     <section className="bg-gray-50 dark:bg-slate-800 py-16 px-4 sm:px-6 transition-all duration-500">
-      <div className="mx-auto">
+      <div className="max-w-[1980px] mx-auto px-6 py-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold font-poppins text-gray-800 dark:text-gray-200 mb-2">
             About the Building

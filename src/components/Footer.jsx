@@ -46,7 +46,7 @@ const Footer = () => {
         {/* Center: Quick Links */}
         <div className="text-center md:text-left space-y-2">
           <h4 className="text-md font-semibold font-poppins">Quick Links</h4>
-          <nav className="flex flex-col space-y-1">
+          <nav className="flex flex-col justify-center items-start mx-auto text-center space-y-1">
             <NavLink to="/" className={navLinkClass}>
               Home
             </NavLink>

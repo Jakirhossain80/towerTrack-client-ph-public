@@ -32,7 +32,7 @@ const LocationAndDirections = () => {
 
   return (
     <section className="bg-gray-50 dark:bg-slate-900 py-10 transition-all duration-500">
-      <div className="max-w-[1980px] mx-auto" data-aos="fade-up">
+      <div className="max-w-[1980px] mx-auto px-6 py-10" data-aos="fade-up">
         <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-bold font-poppins text-gray-800 dark:text-gray-200 mb-2 flex items-center justify-center gap-2">
             <FaMapMarkerAlt className="text-lime-500" />
