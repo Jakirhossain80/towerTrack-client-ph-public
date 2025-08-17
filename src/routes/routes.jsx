@@ -25,7 +25,7 @@ import Communities from "../pages/generalPages/Communities";
 import AboutUs from "../pages/generalPages/AboutUs";
 import ContactUs from "../pages/generalPages/ContactUs";
 import Overview from "../pages/dashboardPages/Overview";
-import AllRolesRoute from "../provider/AllRolesRoute";
+import MemberOrAdminRoute from "../provider/MemberOrAdminRoute";
 
 export const router = createBrowserRouter([
   {
@@ -166,9 +166,9 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/overview",
         element: (
-          <AllRolesRoute>
+          <MemberOrAdminRoute>
             <Overview />
-          </AllRolesRoute>
+          </MemberOrAdminRoute>
         )
       },
     ],

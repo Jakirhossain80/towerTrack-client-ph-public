@@ -12,7 +12,7 @@ import { GrOverview } from "react-icons/gr";
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
-import { Link } from "react-router-dom"; // ✅ Fixed import
+import { Link } from "react-router-dom";
 import useUserRole from "../hooks/useUserRole";
 
 const DashboardLayout = () => {
@@ -50,7 +50,7 @@ const DashboardLayout = () => {
     );
   }
 
-  if (role === "user" || role === "member" || role === "admin") {
+  if (role === "member" || role === "admin") {
     navLinks.push({
       path: "/dashboard/overview",
       label: "Overview",
