@@ -44,9 +44,12 @@ const Footer = () => {
         </div>
 
         {/* Center: Quick Links */}
-        <div className="text-center md:text-left space-y-2">
-          <h4 className="text-md font-semibold font-poppins">Quick Links</h4>
-          <nav className="flex flex-col justify-center items-start mx-auto text-center space-y-1">
+        <div className="text-center md:text-left space-y-2 flex justify-center items-start">
+          
+          
+          <div>
+            <h4 className="text-md font-semibold font-poppins">Quick Links</h4>
+          <nav className="flex flex-col space-y-1">
             <NavLink to="/" className={navLinkClass}>
               Home
             </NavLink>
@@ -70,6 +73,10 @@ const Footer = () => {
               ContactUs
             </NavLink>
           </nav>
+          </div>
+        
+        
+        
         </div>
 
         {/* Right: Socials & Contact */}
