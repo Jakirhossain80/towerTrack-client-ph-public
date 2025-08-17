@@ -184,7 +184,7 @@ const Apartment = () => {
             setMinRent(0);
             setMaxRent(Infinity);
           }}
-          className="px-4 py-2 rounded-md bg-rose-500 text-white hover:bg-rose-600 cursor-pointer"
+          className="px-2 py-2 rounded-md bg-rose-500 text-white hover:bg-rose-600 cursor-pointer"
         >
           Clear Filter
         </button>

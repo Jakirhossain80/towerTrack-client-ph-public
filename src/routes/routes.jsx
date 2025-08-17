@@ -11,7 +11,6 @@ import MyProfile from "../pages/dashboardPages/MyProfile";
 import Announcements from "../pages/dashboardPages/Announcements";
 import AdminProfile from "../pages/dashboardPages/AdminProfile";
 import AdminRoute from "../provider/AdminRoute";
-import UserRoute from "../provider/UserRoute";
 import MakeAnnouncement from "../pages/dashboardPages/MakeAnnouncement";
 import ManageCoupons from "../pages/dashboardPages/ManageCoupons";
 import AgreementRequest from "../pages/dashboardPages/AgreementRequest";
@@ -25,6 +24,8 @@ import UserOrMemberRoute from "../provider/UserOrMemberRoute";
 import Communities from "../pages/generalPages/Communities";
 import AboutUs from "../pages/generalPages/AboutUs";
 import ContactUs from "../pages/generalPages/ContactUs";
+import Overview from "../pages/dashboardPages/Overview";
+import AllRolesRoute from "../provider/AllRolesRoute";
 
 export const router = createBrowserRouter([
   {
@@ -160,6 +161,14 @@ export const router = createBrowserRouter([
           <AdminRoute>
             <ManageMembers />
           </AdminRoute>
+        )
+      },
+      {
+        path: "/dashboard/overview",
+        element: (
+          <AllRolesRoute>
+            <Overview />
+          </AllRolesRoute>
         )
       },
     ],

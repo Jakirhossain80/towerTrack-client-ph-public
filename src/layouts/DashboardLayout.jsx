@@ -8,6 +8,7 @@ import { RiCouponLine } from "react-icons/ri";
 import { LuHandshake } from "react-icons/lu";
 import { FaPeopleLine, FaMoneyCheckDollar } from "react-icons/fa6";
 import { LiaClipboardListSolid } from "react-icons/lia";
+import { GrOverview } from "react-icons/gr";
 import logo from "../assets/logo-towertrack-final.png";
 import Loading from "../utils/Loading";
 import "../index.css";
@@ -41,25 +42,69 @@ const DashboardLayout = () => {
   if (role === "user" || role === "member") {
     navLinks.push(
       { path: "/dashboard/my-profile", label: "My Profile", icon: <FiUser /> },
-      { path: "/dashboard/announcements", label: "Announcements", icon: <TfiAnnouncement /> }
+      {
+        path: "/dashboard/announcements",
+        label: "Announcements",
+        icon: <TfiAnnouncement />,
+      }
     );
+  }
+
+  if (role === "user" || role === "member" || role === "admin") {
+    navLinks.push({
+      path: "/dashboard/overview",
+      label: "Overview",
+      icon: <GrOverview />,
+    });
   }
 
   if (role === "admin") {
     navLinks.push(
-      { path: "/dashboard/adminProfile", label: "Admin Profile", icon: <FaUsersCog /> },
-      { path: "/dashboard/manageMembers", label: "Manage Members", icon: <FaPeopleLine /> },
-      { path: "/dashboard/makeAnnouncement", label: "Make Announcement", icon: <TfiAnnouncement /> },
-      { path: "/dashboard/agreementRequest", label: "Agreement Request", icon: <LuHandshake /> },
-      { path: "/dashboard/manageCoupons", label: "Manage Coupons", icon: <RiCouponLine /> }
+      {
+        path: "/dashboard/adminProfile",
+        label: "Admin Profile",
+        icon: <FaUsersCog />,
+      },
+      {
+        path: "/dashboard/manageMembers",
+        label: "Manage Members",
+        icon: <FaPeopleLine />,
+      },
+      {
+        path: "/dashboard/makeAnnouncement",
+        label: "Make Announcement",
+        icon: <TfiAnnouncement />,
+      },
+      {
+        path: "/dashboard/agreementRequest",
+        label: "Agreement Request",
+        icon: <LuHandshake />,
+      },
+      {
+        path: "/dashboard/manageCoupons",
+        label: "Manage Coupons",
+        icon: <RiCouponLine />,
+      }
     );
   }
 
   if (role === "member") {
     navLinks.push(
-      { path: "/dashboard/makePayment", label: "Make Payment", icon: <FaMoneyCheckDollar /> },
-      { path: "/dashboard/paymentHistory", label: "Payment History", icon: <FaMoneyCheckDollar /> },
-      { path: "/dashboard/noticeBoard", label: "Notice Board", icon: <LiaClipboardListSolid /> }
+      {
+        path: "/dashboard/makePayment",
+        label: "Make Payment",
+        icon: <FaMoneyCheckDollar />,
+      },
+      {
+        path: "/dashboard/paymentHistory",
+        label: "Payment History",
+        icon: <FaMoneyCheckDollar />,
+      },
+      {
+        path: "/dashboard/noticeBoard",
+        label: "Notice Board",
+        icon: <LiaClipboardListSolid />,
+      }
     );
   }
 
@@ -93,7 +138,9 @@ const DashboardLayout = () => {
         >
           <div className="text-center transition-all duration-500">
             <img
-              src={user?.photoURL || "https://i.ibb.co/0jqHpnp/default-user.png"}
+              src={
+                user?.photoURL || "https://i.ibb.co/0jqHpnp/default-user.png"
+              }
               alt="User"
               className="mx-auto h-16 w-16 rounded-full object-cover border-2 border-lime-500 transition-all duration-500"
             />
